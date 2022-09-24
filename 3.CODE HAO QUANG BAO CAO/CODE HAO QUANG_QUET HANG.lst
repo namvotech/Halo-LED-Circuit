@@ -1,0 +1,2222 @@
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 1
+
+
+
+
+
+       MCS-51 Family Macro Assembler   A S E M - 5 1   V 1.3
+       =====================================================
+
+
+
+	Source File:	D:\1.TAI LIEU CHUYEN NGANH\1.MON HOC\7.HOC KY I_2012-2013\DO AN MON HOC 2_thay Do Duc Tri\BAI BAO CAO DO AN MON HOC 2_MINH NAM\MACH\CODE HAO QUANG BAO CAO\CODE HAO QUANG_QUET HANG.ASM
+	Object File:	D:\1.TAI LIEU CHUYEN NGANH\1.MON HOC\7.HOC KY I_2012-2013\DO AN MON HOC 2_thay Do Duc Tri\BAI BAO CAO DO AN MON HOC 2_MINH NAM\MACH\CODE HAO QUANG BAO CAO\CODE HAO QUANG_QUET HANG.hex
+	List File:	D:\1.TAI LIEU CHUYEN NGANH\1.MON HOC\7.HOC KY I_2012-2013\DO AN MON HOC 2_thay Do Duc Tri\BAI BAO CAO DO AN MON HOC 2_MINH NAM\MACH\CODE HAO QUANG BAO CAO\CODE HAO QUANG_QUET HANG.lst
+
+
+
+ Line  I  Addr  Code            Source
+
+    1:				;khai bao ban dau
+    2:		B	 A0			CDS			BIT		P2.0	;du lieu vao cot
+    3:		B	 A1			CSHCP		BIT		P2.1	;xung clock cot
+    4:		B	 A2			CSTCP		BIT		P2.2	;xung clock chot du lieu cot
+    5:		B	 A3			COE			BIT		P2.3	;chan cho phep xuat du lieu cot
+    6:
+    7:		B	 A4			HDS			BIT		P2.4	;du lieu vao hang
+    8:		B	 A5			HSHCP		BIT		P2.5	;xung clock hang
+    9:		B	 A6			HSTCP		BIT		P2.6	;xung clock chot du lieu hang
+   10:		B	 A7			HOE			BIT		P2.7	;chan cho phep du lieu hang
+   11:
+   12:		B	 90			DCM			BIT		P1.0	;dieu chinh mode chon hieu ung
+   13:		B	 91			DCN			BIT		P1.1	;dieu chinh toc do chu van
+   14:		B	 92			DCCK		BIT		P1.2	;dieu chinh toc do hieu ung
+   15:		B	 93			AN0			BIT		P1.3	;led hang don vi
+   16:		B	 94			AN1			BIT		P1.4	;led hang chuc
+   17:		B	 95			VAN0		BIT		P1.5	;led chu van 0
+   18:		B	 96			VAN1		BIT		P1.6	;led chu van 1
+   19:		B	 97			KICH1		BIT		P1.7	;led vong xoay
+   20:		D      00B0			SEG			EQU	P3		;data led 7 doan
+   21:
+   22:		R	 R7			SLBYTE		EQU	R7		;so luong hang
+   23:		R	 R6			SLBIT		EQU	R6		;so luong cot
+   24:		R	 R5			CHUKY		EQU	R5		;chu ky
+   25:		R	 R4			BDN			EQU	R4		;bien dem ngat
+   26:		R	 R3			BMODE		EQU	R3		;bien mode
+   27:		N      0040			CK			EQU	40H		;bien chu ky
+   28:		N      0041			CK1			EQU	41H		;bien chu ky 1
+   29:		N      0042			DL			EQU	42H		;bien delay
+   30:		N      0043			NGAT		EQU	43H		;bien ngat
+   31:		N      0044			NGAT1		EQU	44H		;bien ngat 1
+   32:		N      0045			LAP			EQU	45H		;bien lap
+   33:		N      0046			HT			EQU	46H		;hien thi 1
+   34:		N      0047			BHT_CK1		EQU	47H		;bien hien thi ck1
+   35:		N      0051			BHT_NGAT1	EQU	51H		;bien hien thi ngat1
+   36:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   37:				;chuong trinh chinh
+   38:		N      0000			ORG		0000H
+   39:	  0000	02 00 13			JMP		MAIN
+   40:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   41:				;chuong trinh ngat
+   42:		N      000B			ORG		000BH
+   43:	  000B	0C				INC		BDN
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 2
+
+
+
+ Line  I  Addr  Code            Source
+
+   44:	  000C	75 8C D8			MOV		TH0,#HIGH(-10000)
+   45:	  000F	75 8A F0			MOV		TL0,#LOW(-10000)
+   46:	  0012	32				RETI
+   47:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   48:				;chuong trinh main
+   49:	  0013			MAIN:
+   50:	  0013	75 89 11			MOV		TMOD,#11H		;khoi tao thanh ghi tmod T0_M1 va T1_M1
+
+   51:	  0016	D2 8C				SETB	TR0
+   52:	  0018	75 A8 82			MOV		IE,#82H			;khoi tao thanh ghi ngat IE, ngat T0
+   53:	  001B	C2 93				CLR		AN0
+   54:	  001D	C2 94				CLR		AN1
+   55:	  001F	7C 00				MOV		BDN,#0
+   56:	  0021	75 40 16			MOV		CK,#22
+   57:	  0024	75 41 0B			MOV		CK1,#11
+   58:	  0027	75 44 01			MOV		NGAT1,#1
+   59:	  002A	75 43 02			MOV		NGAT,#2
+   60:	  002D	7B 00				MOV		BMODE,#0
+   61:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   62:	  002F	12 00 58	MAIN0:	 CALL	HAOQUANG1		;chong chong 4 canh,5 tia sang xoay phai trai
+   63:	  0032	12 00 65			 CALL	HAOQUANG2		;chong chong 4 canh,3 tia sang xoay phai trai
+   64:	  0035	12 00 72			 CALL	HAOQUANG3		;chong chong 4 canh,1 tia sang xoay phai trai
+   65:	  0038	12 00 7F			 CALL	HAOQUANG4		;2 phuong hoang chay phai trai
+   66:	  003B	12 00 8C			 CALL	HAOQUANG5		;hoa vien sang 4 canh xoay phai trai
+   67:	  003E	12 00 99			 CALL	HAOQUANG6		;hoa sang 4 canh xoay trai phai
+   68:	  0041	12 00 A6			 CALL	HAOQUANG7		;hoa tat 4 canh xoay phai trai
+   69:	  0044	12 00 B3			 CALL	HAOQUANG8		;hoa 4 canh, tat no tu trong ra ngoai
+   70:	  0047	12 00 C3			 CALL	HAOQUANG9		;chong chong 3 canh sang xoay phai trai
+   71:	  004A	12 00 D0			 CALL	HAOQUANG10	;chong chong 2 canh xoay phai tra
+   72:	  004D	12 00 DD			 CALL	HAOQUANG11	;kim cuong xoay phai trai
+   73:	  0050	12 00 EA			 CALL	HAOQUANG12	;3 tia moc tu trong ra
+   74:	  0053	12 00 FA			 CALL	HAOQUANG13	;chu van xoay phai-trai
+   75:	  0056	80 D7				JMP		MAIN0
+   76:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   77:				;chong chong 4 canh,5 tia sang xoay phai trai
+   78:	  0058			HAOQUANG1:
+   79:	  0058	75 45 19			MOV		LAP,#25
+   80:	  005B	12 01 07	M1:		CALL 	HIEUUNGDON
+   81:	  005E	12 01 70			CALL	MT_4CANH5TIA_PT
+   82:	  0061	D5 45 F7			DJNZ	LAP,M1
+   83:	  0064	22				RET
+   84:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   85:				;chong chong 4 canh,3 tia sang xoay phai trai
+   86:	  0065			HAOQUANG2:
+   87:	  0065	75 45 19			MOV		LAP,#25
+   88:	  0068	12 01 07	M2:		CALL 	HIEUUNGDON
+   89:	  006B	12 01 77			CALL	MT_4CANH3TIA_PT
+   90:	  006E	D5 45 F7			DJNZ	LAP,M2
+   91:	  0071	22				RET
+   92:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   93:				;chong chong 4 canh,1 tia sang xoay phai trai
+   94:	  0072			HAOQUANG3:
+   95:	  0072	75 45 19			MOV		LAP,#25
+   96:	  0075	12 01 07	M3:		CALL 	HIEUUNGDON
+   97:	  0078	12 01 7E			CALL	MT_4CANH1TIA_PT
+   98:	  007B	D5 45 F7			DJNZ	LAP,M3
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 3
+
+
+
+ Line  I  Addr  Code            Source
+
+   99:	  007E	22				RET
+  100:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  101:				;2 phuong hoang chay phai trai
+  102:	  007F			HAOQUANG4:
+  103:	  007F	75 45 1E			MOV		LAP,#30
+  104:	  0082	12 01 07	M4:		CALL 	HIEUUNGDON
+  105:	  0085	12 01 85			CALL	MT_PHOANG_PT
+  106:	  0088	D5 45 F7			DJNZ	LAP,M4
+  107:	  008B	22				RET
+  108:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  109:				;hoa sang 4 canh xoay trai phai
+  110:	  008C			HAOQUANG5:
+  111:	  008C	75 45 1E			MOV		LAP,#30
+  112:	  008F	12 01 07	M5:		CALL 	HIEUUNGDON
+  113:	  0092	12 01 8C			CALL	MT_HOASANG_PT
+  114:	  0095	D5 45 F7			DJNZ	LAP,M5
+  115:	  0098	22				RET
+  116:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  117:				;hoa vien sang 4 canh xoay phai trai
+  118:	  0099			HAOQUANG6:
+  119:	  0099	75 45 1E			MOV		LAP,#30
+  120:	  009C	12 01 07	M6:		CALL 	HIEUUNGDON
+  121:	  009F	12 01 93			CALL	MT_HOAVIEN_PT
+  122:	  00A2	D5 45 F7			DJNZ	LAP,M6
+  123:	  00A5	22				RET
+  124:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  125:				;hoa tat 4 canh xoay phai trai
+  126:	  00A6			HAOQUANG7:
+  127:	  00A6	75 45 1E			MOV		LAP,#30
+  128:	  00A9	12 01 07	M7:		CALL 	HIEUUNGDON
+  129:	  00AC	12 01 9A			CALL	MT_HOATAT_PT
+  130:	  00AF	D5 45 F7			DJNZ	LAP,M7
+  131:	  00B2	22				RET
+  132:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  133:				;hoa 4 canh, tat no tu trong ra ngoai
+  134:	  00B3			HAOQUANG8:
+  135:	  00B3	75 45 14			MOV		LAP,#20
+  136:	  00B6	12 01 A1	M8A:	CALL	MT_HOANO_MOC
+  137:	  00B9	12 01 07	M8B:	CALL 	HIEUUNGDON
+  138:	  00BC	12 01 A8			CALL	MT_HOANO_CHAY
+  139:	  00BF	D5 45 F7			DJNZ	LAP,M8B
+  140:	  00C2	22				RET
+  141:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  142:				;chong chong 3 canh sang xoay phai trai
+  143:	  00C3			HAOQUANG9:
+  144:	  00C3	75 45 1E			MOV		LAP,#30
+  145:	  00C6	12 01 07	M9:		CALL 	HIEUUNGDON
+  146:	  00C9	12 01 AF			CALL	MT_3CANH_PT
+  147:	  00CC	D5 45 F7			DJNZ	LAP,M9
+  148:	  00CF	22				RET
+  149:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  150:				;chong chong 2 canh xoay phai tra
+  151:	  00D0			HAOQUANG10:
+  152:	  00D0	75 45 1E			MOV		LAP,#30
+  153:	  00D3	12 01 07	M10:		CALL 	HIEUUNGDON
+  154:	  00D6	12 01 B6			CALL	MT_2CANH_PT
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 4
+
+
+
+ Line  I  Addr  Code            Source
+
+  155:	  00D9	D5 45 F7			DJNZ	LAP,M10
+  156:	  00DC	22				RET
+  157:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  158:				;kim cuong xoay phai trai
+  159:	  00DD			HAOQUANG11:
+  160:	  00DD	75 45 1E			MOV	LAP,#30
+  161:	  00E0	12 01 07	M11:		CALL 	HIEUUNGDON
+  162:	  00E3	12 01 BD			CALL	MT_KIMCUONG_PT
+  163:	  00E6	D5 45 F7			DJNZ	LAP,M11
+  164:	  00E9	22				RET
+  165:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  166:				;3 tia moc tu trong ra
+  167:	  00EA			HAOQUANG12:
+  168:	  00EA	75 45 1E			MOV	LAP,#30
+  169:	  00ED	12 01 C4	M12A:	CALL	MT_3TIA_MOC
+  170:	  00F0	12 01 07	M12B:	CALL 	HIEUUNGDON
+  171:	  00F3	12 01 CB			CALL	MT_3TIA_CHAY
+  172:	  00F6	D5 45 F7			DJNZ	LAP,M12B
+  173:	  00F9	22				RET
+  174:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  175:				;chu van xoay phai-trai
+  176:	  00FA			HAOQUANG13:
+  177:	  00FA	75 45 14			MOV	LAP,#20
+  178:	  00FD	12 01 07	M13:		CALL 	HIEUUNGDON
+  179:	  0100	12 01 D2			CALL	MT_CHUVAN_PT
+  180:	  0103	D5 45 F7			DJNZ	LAP,M13
+  181:	  0106	22				RET
+  182:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  183:				;chuong trinh con hieu ung don
+  184:	  0107			HIEUUNGDON:
+  185:				;chong chong 4 canh,5 tia sang xoay phai trai
+  186:	  0107	BB 01 05			CJNE	BMODE,#1,DON1
+  187:	  010A	12 01 70			CALL	MT_4CANH5TIA_PT
+  188:	  010D	80 F8				JMP		HIEUUNGDON
+  189:				;chong chong 4 canh,3 tia sang xoay phai trai
+  190:	  010F	BB 02 05	DON1:	CJNE	BMODE,#2,DON2
+  191:	  0112	12 01 77			CALL	MT_4CANH3TIA_PT
+  192:	  0115	80 F0				JMP		HIEUUNGDON
+  193:				;chong chong 4 canh,1 tia sang xoay phai tra
+  194:	  0117	BB 03 05	DON2:	CJNE	BMODE,#3,DON3
+  195:	  011A	12 01 7E			CALL	MT_4CANH1TIA_PT
+  196:	  011D	80 E8				JMP		HIEUUNGDON
+  197:				;2 phuong hoang chay phai trai
+  198:	  011F	BB 04 05	DON3:	CJNE	BMODE,#4,DON4
+  199:	  0122	12 01 85			CALL	MT_PHOANG_PT
+  200:	  0125	80 E0				JMP		HIEUUNGDON
+  201:				;hoa sang 4 canh xoay trai phai
+  202:	  0127	BB 05 05	DON4:	CJNE	BMODE,#5,DON5
+  203:	  012A	12 01 8C			CALL	MT_HOASANG_PT
+  204:	  012D	80 D8				JMP		HIEUUNGDON
+  205:				;hoa vien sang 4 canh xoay phai trai
+  206:	  012F	BB 06 05	DON5:	CJNE	BMODE,#6,DON6
+  207:	  0132	12 01 93			CALL	MT_HOAVIEN_PT
+  208:	  0135	80 D0				JMP		HIEUUNGDON
+  209:				;hoa tat 4 canh xoay phai trai
+  210:	  0137	BB 07 05	DON6:	CJNE	BMODE,#7,DON7
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 5
+
+
+
+ Line  I  Addr  Code            Source
+
+  211:	  013A	12 01 9A			CALL	MT_HOATAT_PT
+  212:	  013D	80 C8				JMP		HIEUUNGDON
+  213:				;hoa 4 canh, tat no tu trong ra ngoai
+  214:	  013F	BB 08 05	DON7:	CJNE	BMODE,#8,DON8
+  215:	  0142	12 01 A8			CALL	MT_HOANO_CHAY
+  216:	  0145	80 C0				JMP		HIEUUNGDON
+  217:				;chong chong 3 canh sang xoay phai trai
+  218:	  0147	BB 09 05	DON8:	CJNE	BMODE,#9,DON9
+  219:	  014A	12 01 AF			CALL	MT_3CANH_PT
+  220:	  014D	80 B8				JMP		HIEUUNGDON
+  221:				;chong chong 2 canh xoay phai trai
+  222:	  014F	BB 0A 05	DON9:	CJNE	BMODE,#10,DON10
+  223:	  0152	12 01 B6			CALL	MT_2CANH_PT
+  224:	  0155	80 B0				JMP		HIEUUNGDON
+  225:				;kim cuong xoay phai trai
+  226:	  0157	BB 0B 05	DON10:	CJNE	BMODE,#11,DON11
+  227:	  015A	12 01 BD			CALL	MT_KIMCUONG_PT
+  228:	  015D	80 A8				JMP		HIEUUNGDON
+  229:				;3 tia moc tu trong ra
+  230:	  015F	BB 0C 05	DON11:	CJNE	BMODE,#12,DON12
+  231:	  0162	12 01 CB			CALL	MT_3TIA_CHAY
+  232:	  0165	80 A0				JMP		HIEUUNGDON
+  233:				;chu van xoay phai-trai
+  234:	  0167	BB 0D 05	DON12:	CJNE	BMODE,#13,DON13
+  235:	  016A	12 01 D2			CALL	MT_CHUVAN_PT
+  236:	  016D	80 98				JMP		HIEUUNGDON
+  237:	  016F	22		DON13:	RET
+  238:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  239:				;dua hieu ung vao dptr
+  240:	  0170			MT_4CANH5TIA_PT:
+  241:	  0170	90 03 26			MOV		DPTR,#HU_4CANH5TIA_PT
+  242:	  0173	12 02 34			CALL	QUETLED
+  243:	  0176	22				RET
+  244:	  0177			MT_4CANH3TIA_PT:
+  245:	  0177	90 03 B7			MOV		DPTR,#HU_4CANH3TIA_PT
+  246:	  017A	12 02 34			CALL	QUETLED
+  247:	  017D	22				RET
+  248:	  017E			MT_4CANH1TIA_PT:
+  249:	  017E	90 04 48			MOV		DPTR,#HU_4CANH1TIA_PT
+  250:	  0181	12 02 34			CALL	QUETLED
+  251:	  0184	22				RET
+  252:				;;;;;;;;;;;;;
+  253:	  0185			MT_PHOANG_PT:
+  254:	  0185	90 04 D9			MOV		DPTR,#HU_PHOANG_PT
+  255:	  0188	12 02 34			CALL	QUETLED
+  256:	  018B	22				RET
+  257:				;;;;;;;;;;;;
+  258:	  018C			MT_HOASANG_PT:
+  259:	  018C	90 05 FA			MOV		DPTR,#HU_HOASANG_PT
+  260:	  018F	12 02 34			CALL	QUETLED
+  261:	  0192	22				RET
+  262:	  0193			MT_HOAVIEN_PT:
+  263:	  0193	90 06 8B			MOV		DPTR,#HU_HOAVIEN_PT
+  264:	  0196	12 02 34			CALL	QUETLED
+  265:	  0199	22				RET
+  266:	  019A			MT_HOATAT_PT:
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 6
+
+
+
+ Line  I  Addr  Code            Source
+
+  267:	  019A	90 07 1C			MOV		DPTR,#HU_HOATAT_PT
+  268:	  019D	12 02 34			CALL	QUETLED
+  269:	  01A0	22				RET
+  270:	  01A1			MT_HOANO_MOC:
+  271:	  01A1	90 07 AD			MOV		DPTR,#HU_HOANO_MOC
+  272:	  01A4	12 02 34			CALL	QUETLED
+  273:	  01A7	22				RET
+  274:	  01A8			MT_HOANO_CHAY:
+  275:	  01A8	90 08 56			MOV		DPTR,#HU_HOANO_CHAY
+  276:	  01AB	12 02 34			CALL	QUETLED
+  277:	  01AE	22				RET
+  278:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  279:	  01AF			MT_3CANH_PT:
+  280:	  01AF	90 0A 37			MOV		DPTR,#HU_3CANH_PT
+  281:	  01B2	12 02 34			CALL	QUETLED
+  282:	  01B5	22				RET
+  283:	  01B6			MT_2CANH_PT:
+  284:	  01B6	90 0A F8			MOV		DPTR,#HU_2CANH_PT
+  285:	  01B9	12 02 34			CALL	QUETLED
+  286:	  01BC	22				RET
+  287:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  288:	  01BD			MT_KIMCUONG_PT:
+  289:	  01BD	90 0C 19			MOV		DPTR,#HU_KIMCUONG_PT
+  290:	  01C0	12 02 34			CALL	QUETLED
+  291:	  01C3	22				RET
+  292:	  01C4			MT_3TIA_MOC:
+  293:	  01C4	90 0C DA			MOV		DPTR,#HU_3TIA_MOC
+  294:	  01C7	12 02 34			CALL	QUETLED
+  295:	  01CA	22				RET
+  296:	  01CB			MT_3TIA_CHAY:
+  297:	  01CB	90 0D 83			MOV		DPTR,#HU_3TIA_CHAY
+  298:	  01CE	12 02 34			CALL	QUETLED
+  299:	  01D1	22				RET
+  300:				;;;;;;;;;;;;;;;;;;;;;;;
+  301:	  01D2			MT_CHUVAN_PT:
+  302:	  01D2	90 0E A4			MOV		DPTR,#HU_CHUVAN_PT
+  303:	  01D5	12 02 34			CALL	QUETLED
+  304:	  01D8	22				RET
+  305:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  306:				;nut nhan chon hieu ung
+  307:	  01D9			DCMODE:
+  308:	  01D9	0B				INC		BMODE
+  309:	  01DA	BB 0E 02			CJNE	BMODE,#14,DCMODE3
+  310:	  01DD	7B 00				MOV		BMODE,#0
+  311:	  01DF			DCMODE3:
+  312:	  01DF	12 02 C0			CALL	GIAIMA_HT1
+  313:	  01E2	30 90 F4			JNB		DCM,DCMODE
+  314:	  01E5	22				RET
+  315:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  316:				;nut nhan dieu chinh toc do hieu ung
+  317:	  01E6			DCCHUKY:
+  318:	  01E6	15 40				DEC		CK
+  319:	  01E8	15 40				DEC		CK
+  320:	  01EA	E5 40				MOV		A,CK
+  321:	  01EC	B4 02 00			CJNE	A,#2,$+3
+  322:	  01EF	50 03				JNC		DCCHUKY1
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 7
+
+
+
+ Line  I  Addr  Code            Source
+
+  323:	  01F1	75 40 C6			MOV		CK,#198
+  324:	  01F4			DCCHUKY1:
+  325:	  01F4	E5 40				MOV		A,CK
+  326:	  01F6	75 F0 02			MOV 	B,#2
+  327:	  01F9	84				DIV		AB
+  328:	  01FA	F5 41				MOV		CK1,A
+  329:
+  330:	  01FC	C3				CLR		C
+  331:	  01FD	85 41 47			MOV		BHT_CK1,CK1
+  332:	  0200	74 64				MOV		A,#100
+  333:	  0202	95 47				SUBB	A,BHT_CK1
+  334:	  0204	F5 47				MOV  	BHT_CK1,A
+  335:	  0206	12 02 C4			CALL	GIAIMA_HT2
+  336:	  0209	30 92 DA			JNB		DCCK,DCCHUKY
+  337:	  020C	22				RET
+  338:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  339:				;nut nhan dieu chinh chu van
+  340:	  020D			DCNGAT:
+  341:	  020D	15 43				DEC		NGAT
+  342:	  020F	15 43				DEC		NGAT
+  343:	  0211	E5 43				MOV		A,NGAT
+  344:	  0213	B4 02 00			CJNE	A,#2,$+3
+  345:	  0216	50 03				JNC		DCNGAT1
+  346:	  0218	75 43 C6			MOV		NGAT,#198
+  347:	  021B			DCNGAT1:
+  348:	  021B	E5 43				MOV		A,NGAT
+  349:	  021D	75 F0 02			MOV 	B,#2
+  350:	  0220	84				DIV		AB
+  351:	  0221	F5 44				MOV		NGAT1,A
+  352:
+  353:	  0223	C3				CLR		C
+  354:	  0224	85 44 51			MOV		BHT_NGAT1,NGAT1
+  355:	  0227	74 64				MOV		A,#100
+  356:	  0229	95 51				SUBB	A,BHT_NGAT1
+  357:	  022B	F5 51				MOV  	BHT_NGAT1,A
+
+  358:	  022D	12 02 C9			CALL	GIAIMA_HT3
+  359:	  0230	30 91 DA			JNB		DCN,DCNGAT
+  360:	  0233	22				RET
+  361:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  362:				;chuong trinh con quet led
+  363:	  0234			QUETLED:
+  364:	  0234	75 42 14			MOV		DL,#20
+  365:	  0237	AD 40				MOV		CHUKY,CK
+  366:	  0239	D2 A7				SETB	HOE
+  367:	  023B	D2 A3				SETB	COE
+  368:	  023D			QUETLED1:
+  369:	  023D	30 90 99			JNB		DCM,DCMODE
+  370:	  0240	30 92 A3			JNB		DCCK,DCCHUKY
+  371:	  0243	30 91 C7			JNB		DCN,DCNGAT
+  372:
+  373:	  0246	D2 A4				SETB	HDS
+  374:	  0248	12 02 B7			CALL	XUNGHANG
+  375:	  024B	C2 A4				CLR		HDS
+  376:
+  377:	  024D	7F 00				MOV		SLBYTE,#0
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 8
+
+
+
+ Line  I  Addr  Code            Source
+
+  378:	  024F			QUETLED2:
+  379:	  024F	75 80 03			MOV		80H,#3
+  380:	  0252			QUETLED3:
+  381:	  0252	EF				MOV		A,SLBYTE
+  382:	  0253	93				MOVC	A,@A+DPTR
+  383:	  0254	B4 99 01			CJNE	A,#099H,QUETLED4
+  384:	  0257	22				RET
+  385:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  386:	  0258			QUETLED4:
+  387:	  0258	12 02 A7			CALL	DATACOT
+  388:	  025B	0F				INC		SLBYTE
+  389:	  025C	D5 80 F3			DJNZ	80H,QUETLED3
+  390:
+  391:	  025F	C2 A3				CLR		COE
+  392:	  0261	C2 A7				CLR		HOE
+  393:	  0263	12 03 08			CALL	DELAY
+  394:	  0266	D2 A7				SETB	HOE
+  395:	  0268	D2 A3				SETB	COE
+  396:	  026A	12 02 B7			CALL	XUNGHANG
+  397:
+  398:	  026D	EC				MOV		A,BDN
+  399:	  026E	B5 44 00			CJNE	A,NGAT1,$+3
+  400:	  0271	40 0A				JC		INTERRUP1
+  401:	  0273	B5 43 00			CJNE	A,NGAT,$+3
+  402:	  0276	40 0C				JC		INTERRUP2
+  403:	  0278	7C 00				MOV		BDN,#0
+  404:	  027A	02 02 8B			JMP		QUETLED5
+  405:	  027D			INTERRUP1:
+  406:	  027D	D2 95				SETB	VAN0
+  407:	  027F	C2 96				CLR		VAN1
+  408:	  0281	02 02 8B			JMP		QUETLED5
+  409:	  0284			INTERRUP2:
+  410:	  0284	C2 95				CLR		VAN0
+  411:	  0286	D2 96				SETB	VAN1
+  412:	  0288	02 02 8B			JMP 	QUETLED5
+
+  413:	  028B			QUETLED5:
+  414:	  028B	BF 18 C1			CJNE	SLBYTE,#24,QUETLED2
+  415:	  028E	1D				DEC		CHUKY
+  416:	  028F	ED				MOV		A,CHUKY
+  417:	  0290	B5 41 00			CJNE	A,CK1,$+3
+  418:	  0293	50 0E				JNC		RELXUNG
+  419:	  0295	C2 97				CLR		KICH1
+  420:	  0297	BD 00 A3			CJNE	CHUKY,#0,QUETLED1
+  421:
+  422:	  029A	75 70 18			MOV		70H,#24
+  423:	  029D			TANGDPTR:
+  424:	  029D	A3				INC		DPTR
+  425:	  029E	D5 70 FC			DJNZ	70H,TANGDPTR
+  426:	  02A1	80 91				JMP		QUETLED
+  427:				;;;;;;;;;;;;;;;;;;;;
+  428:	  02A3			RELXUNG:
+  429:	  02A3	D2 97				SETB	KICH1
+  430:	  02A5	80 96				JMP		QUETLED1
+  431:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  432:	  02A7			DATACOT:
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 9
+
+
+
+ Line  I  Addr  Code            Source
+
+  433:	  02A7	7E 08				MOV		SLBIT,#8
+  434:	  02A9			DATACOT1:
+  435:	  02A9	33				RLC		A
+  436:	  02AA	92 A0				MOV		CDS,C
+  437:	  02AC	C2 A1				CLR		CSHCP
+  438:	  02AE	D2 A1				SETB	CSHCP
+  439:	  02B0	DE F7				DJNZ	SLBIT,DATACOT1
+  440:	  02B2	C2 A2				CLR		CSTCP
+  441:	  02B4	D2 A2				SETB	CSTCP
+  442:	  02B6	22				RET
+  443:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  444:	  02B7			XUNGHANG:
+  445:	  02B7	C2 A5				CLR		HSHCP
+  446:	  02B9	D2 A5				SETB	HSHCP
+  447:	  02BB	C2 A6				CLR		HSTCP
+  448:	  02BD	D2 A6				SETB	HSTCP
+  449:	  02BF	22				RET
+  450:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  451:				;chuong trinh con giai ma hien thi
+  452:	  02C0			GIAIMA_HT1:
+  453:	  02C0	EB				MOV		A,BMODE
+  454:	  02C1	02 02 CB			JMP		GIAIMA_HT
+  455:	  02C4			GIAIMA_HT2:
+  456:	  02C4	E5 47				MOV		A,BHT_CK1
+  457:	  02C6	02 02 CB			JMP		GIAIMA_HT
+  458:	  02C9			GIAIMA_HT3:
+  459:	  02C9	E5 51				MOV		A,BHT_NGAT1
+  460:	  02CB			GIAIMA_HT:
+  461:	  02CB	90 03 1C			MOV		DPTR,#CODE7SEG
+  462:	  02CE	75 F0 0A			MOV		B,#10
+  463:	  02D1	84				DIV		AB
+  464:	  02D2	85 F0 20			MOV		20H,B
+  465:	  02D5	F5 21				MOV		21H,A
+  466:
+  467:	  02D7	93				MOVC	A,@A+DPTR
+  468:	  02D8	F5 31				MOV		31H,A
+  469:
+  470:	  02DA	E5 20				MOV		A,20H
+  471:	  02DC	93				MOVC	A,@A+DPTR
+  472:	  02DD	F5 30				MOV		30H,A
+  473:
+  474:	  02DF	75 42 19			MOV		DL,#25
+  475:	  02E2	75 46 FA			MOV		HT,#250
+  476:	  02E5	E5 31		LAPLAI:	MOV		A,31H
+  477:	  02E7	B4 C0 06			CJNE	A,#0C0H,XOA1
+  478:	  02EA	75 B0 FF			MOV		SEG,#0FFH
+  479:	  02ED	02 02 F3			JMP		XOA2
+  480:	  02F0	85 31 B0	XOA1:	MOV		SEG,31H
+  481:	  02F3	D2 94		XOA2:	SETB	AN1
+  482:	  02F5	12 03 08			CALL	DELAY
+  483:	  02F8	C2 94				CLR		AN1
+  484:
+  485:	  02FA	85 30 B0			MOV		SEG,30H
+  486:	  02FD	D2 93				SETB	AN0
+  487:	  02FF	12 03 08			CALL	DELAY
+  488:	  0302	C2 93				CLR		AN0
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 10
+
+
+
+ Line  I  Addr  Code            Source
+
+  489:	  0304	D5 46 DE			DJNZ	HT,LAPLAI
+  490:	  0307	22				RET
+  491:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  492:	  0308	85 42 7F	DELAY:	MOV		7FH,DL
+  493:	  030B	75 8D FF	DELAY1:	MOV		TH1,#HIGH(-10)
+  494:	  030E	75 8B F6			MOV		 TL1,#LOW(-10)
+  495:	  0311	D2 8E				SETB	TR1
+  496:	  0313	30 8F FD			JNB		TF1,$
+  497:	  0316	C2 8F				CLR		TF1
+  498:	  0318	D5 7F F0			DJNZ	7FH,DELAY1
+  499:	  031B	22				RET
+  500:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  501:	  031C			CODE7SEG:
+  502:	  031C	C0 F9 A4 B0	DB	0C0H,0F9H,0A4H, 0B0H, 099H
+	  0320	99
+  503:	  0321	92 82 F8 80	DB	092H, 082H, 0F8H, 080H, 090H
+	  0325	90
+  504:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  505:				;bang ma tat ca hieu ung
+  506:	  0326			HU_4CANH5TIA_PT:
+  507:				;chong chong 4 canh,5
+  508:				;tia sang xoay phai trai
+  509:	  0326	20 82 08	DB	20H,82H,8H
+  510:	  0329	41 04 10	DB	41H,4H,10H
+  511:	  032C	82 08 20	DB	82H,8H,20H
+  512:	  032F	04 10 41	DB	4H,10H,41H
+  513:	  0332	08 20 82	DB	8H,20H,82H
+  514:	  0335	10 41 04	DB	10H,41H,4H
+  515:	  0338	20 82 08	DB	20H,82H,8H
+  516:	  033B	41 04 10	DB	41H,4H,10H
+  517:
+  518:	  033E	41 04 10	 DB	41H,4H,10H
+  519:	  0341	82 08 20	 DB	82H,8H,20H
+  520:	  0344	04 10 41	 DB	4H,10H,41H
+  521:	  0347	08 20 82	 DB	8H,20H,82H
+  522:	  034A	10 41 04	 DB	10H,41H,4H
+  523:	  034D	20 82 08	 DB	20H,82H,8H
+  524:	  0350	41 04 10	 DB	41H,4H,10H
+  525:	  0353	82 08 20	 DB	82H,8H,20H
+  526:
+  527:	  0356	82 08 20	 DB	82H,8H,20H
+  528:	  0359	04 10 41	 DB	4H,10H,41H
+  529:	  035C	08 20 82	 DB	8H,20H,82H
+  530:	  035F	10 41 04	 DB	10H,41H,4H
+  531:	  0362	20 82 08	 DB	20H,82H,8H
+  532:	  0365	41 04 10	 DB	41H,4H,10H
+  533:	  0368	82 08 20	 DB	82H,8H,20H
+  534:	  036B	04 10 41	 DB	4H,10H,41H
+  535:
+  536:	  036E	04 10 41	 DB	4H,10H,41H
+  537:	  0371	08 20 82	 DB	8H,20H,82H
+  538:	  0374	10 41 04	 DB	10H,41H,4H
+  539:	  0377	20 82 08	 DB	20H,82H,8H
+  540:	  037A	41 04 10	 DB	41H,4H,10H
+  541:	  037D	82 08 20	 DB	82H,8H,20H
+  542:	  0380	04 10 41	 DB	4H,10H,41H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 11
+
+
+
+ Line  I  Addr  Code            Source
+
+  543:	  0383	08 20 82	 DB	8H,20H,82H
+  544:
+  545:	  0386	08 20 82	 DB	8H,20H,82H
+  546:	  0389	10 41 04	 DB	10H,41H,4H
+  547:	  038C	20 82 08	 DB	20H,82H,8H
+  548:	  038F	41 04 10	 DB	41H,4H,10H
+  549:	  0392	82 08 20	 DB	82H,8H,20H
+  550:	  0395	04 10 41	 DB	4H,10H,41H
+  551:	  0398	08 20 82	 DB	8H,20H,82H
+  552:	  039B	10 41 04	 DB	10H,41H,4H
+  553:
+  554:	  039E	10 41 04	 DB	10H,41H,4H
+  555:	  03A1	20 82 08	 DB	20H,82H,8H
+  556:	  03A4	41 04 10	 DB	41H,4H,10H
+  557:	  03A7	82 08 20	 DB	82H,8H,20H
+  558:	  03AA	04 10 41	 DB	4H,10H,41H
+  559:	  03AD	08 20 82	 DB	8H,20H,82H
+  560:	  03B0	10 41 04	 DB	10H,41H,4H
+  561:	  03B3	20 82 08	 DB	20H,82H,8H
+  562:
+  563:	  03B6	99		 DB	099H
+  564:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  565:	  03B7			HU_4CANH3TIA_PT:
+  566:				;chong chong 4 canh,3
+  567:				;tia sang xoay phai trai
+  568:	  03B7	71 C7 1C	DB	71H,0C7H,1CH
+  569:	  03BA	E3 8E 38	DB	0E3H,8EH,38H
+  570:	  03BD	C7 1C 71	DB	0C7H,1CH,71H
+  571:	  03C0	8E 38 E3	DB	8EH,38H,0E3H
+  572:	  03C3	1C 71 C7	DB	1CH,71H,0C7H
+  573:	  03C6	38 E3 8E	DB	38H,0E3H,8EH
+  574:	  03C9	71 C7 1C	DB	71H,0C7H,1CH
+  575:	  03CC	E3 8E 38	DB	0E3H,8EH,38H
+  576:
+  577:	  03CF	E3 8E 38	DB	0E3H,8EH,38H
+  578:	  03D2	C7 1C 71	DB	0C7H,1CH,71H
+  579:	  03D5	8E 38 E3	DB	8EH,38H,0E3H
+  580:	  03D8	1C 71 C7	DB	1CH,71H,0C7H
+  581:	  03DB	38 E3 8E	DB	38H,0E3H,8EH
+  582:	  03DE	71 C7 1C	DB	71H,0C7H,1CH
+  583:	  03E1	E3 8E 38	DB	0E3H,8EH,38H
+  584:	  03E4	C7 1C 71	DB	0C7H,1CH,71H
+  585:
+  586:	  03E7	C7 1C 71	DB	0C7H,1CH,71H
+  587:	  03EA	8E 38 E3	DB	8EH,38H,0E3H
+  588:	  03ED	1C 71 C7	DB	1CH,71H,0C7H
+  589:	  03F0	38 E3 8E	DB	38H,0E3H,8EH
+  590:	  03F3	71 C7 1C	DB	71H,0C7H,1CH
+  591:	  03F6	E3 8E 38	DB	0E3H,8EH,38H
+  592:	  03F9	C7 1C 71	DB	0C7H,1CH,71H
+  593:	  03FC	8E 38 E3	DB	8EH,38H,0E3H
+  594:
+  595:	  03FF	8E 38 E3	DB	8EH,38H,0E3H
+  596:	  0402	1C 71 C7	DB	1CH,71H,0C7H
+  597:	  0405	38 E3 8E	DB	38H,0E3H,8EH
+  598:	  0408	71 C7 1C	DB	71H, 0C7H,1CH
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 12
+
+
+
+ Line  I  Addr  Code            Source
+
+  599:	  040B	E3 8E 38	DB	0E3H,8EH,38H
+  600:	  040E	C7 1C 71	DB	0C7H,1CH,71H
+  601:	  0411	8E 38 E3	DB	8EH,38H,0E3H
+  602:	  0414	1C 71 C7	DB	1CH,71H,0C7H
+  603:
+  604:	  0417	1C 71 C7	DB	1CH,71H,0C7H
+  605:	  041A	38 E3 8E	DB	38H,0E3H,8EH
+  606:	  041D	71 C7 1C	DB	71H, 0C7H,1CH
+  607:	  0420	E3 8E 38	DB	0E3H,8EH,38H
+  608:	  0423	C7 1C 71	DB	0C7H,1CH,71H
+  609:	  0426	8E 38 E3	DB	8EH,38H,0E3H
+  610:	  0429	1C 71 C7	DB	1CH,71H,0C7H
+  611:	  042C	38 E3 8E	DB	38H,0E3H,8EH
+  612:
+  613:	  042F	38 E3 8E	DB	38H,0E3H,8EH
+  614:	  0432	71 C7 1C	DB	71H, 0C7H,1CH
+  615:	  0435	E3 8E 38	DB	0E3H,8EH,38H
+  616:	  0438	C7 1C 71	DB	0C7H,1CH,71H
+  617:	  043B	8E 38 E3	DB	8EH,38H,0E3H
+  618:	  043E	1C 71 C7	DB	1CH,71H,0C7H
+  619:	  0441	38 E3 8E	DB	38H,0E3H,8EH
+  620:	  0444	71 C7 1C	DB	71H,0C7H,1CH
+  621:
+  622:	  0447	99		DB	099H
+  623:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  624:	  0448			HU_4CANH1TIA_PT:
+  625:				;chong chong 4 canh,1
+  626:				;tia sang xoay phai trai
+  627:	  0448	FB EF BE	DB	0FBH,0EFH,0BEH
+  628:	  044B	F7 DF 7D	DB	0F7H,0DFH,7DH
+  629:	  044E	EF BE FB	DB	0EFH,0BEH,0FBH
+  630:	  0451	DF 7D F7	DB	0DFH,7DH,0F7H
+  631:	  0454	BE FB EF	DB	0BEH,0FBH,0EFH
+  632:	  0457	7D F7 DF	DB	7DH,0F7H,0DFH
+  633:	  045A	FB EF BE	DB	0FBH,0EFH,0BEH
+  634:	  045D	F7 DF 7D	DB	0F7H,0DFH,7DH
+  635:
+  636:	  0460	F7 DF 7D	DB	0F7H,0DFH,7DH
+  637:	  0463	EF BE FB	DB	0EFH,0BEH,0FBH
+  638:	  0466	DF 7D F7	DB	0DFH,7DH,0F7H
+  639:	  0469	BE FB EF	DB	0BEH,0FBH,0EFH
+  640:	  046C	7D F7 DF	DB	7DH,0F7H,0DFH
+  641:	  046F	FB EF BE	DB	0FBH,0EFH,0BEH
+  642:	  0472	F7 DF 7D	DB	0F7H,0DFH,7DH
+  643:	  0475	EF BE FB	DB	0EFH,0BEH,0FBH
+  644:
+  645:	  0478	EF BE FB	DB	0EFH,0BEH,0FBH
+  646:	  047B	DF 7D F7	DB	0DFH,7DH,0F7H
+  647:	  047E	BE FB EF	DB	0BEH,0FBH,0EFH
+  648:	  0481	7D F7 DF	DB	7DH,0F7H,0DFH
+  649:	  0484	FB EF BE	DB	0FBH,0EFH,0BEH
+  650:	  0487	F7 DF 7D	DB	0F7H,0DFH,7DH
+  651:	  048A	EF BE FB	DB	0EFH,0BEH,0FBH
+  652:	  048D	DF 7D F7	DB	0DFH,7DH,0F7H
+  653:
+  654:	  0490	DF 7D F7	DB	0DFH,7DH,0F7H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 13
+
+
+
+ Line  I  Addr  Code            Source
+
+  655:	  0493	BE FB EF	DB	0BEH,0FBH,0EFH
+  656:	  0496	7D F7 DF	DB	7DH,0F7H,0DFH
+  657:	  0499	FB EF BE	DB	0FBH,0EFH,0BEH
+  658:	  049C	F7 DF 7D	DB	0F7H,0DFH,7DH
+  659:	  049F	EF BE FB	DB	0EFH,0BEH,0FBH
+  660:	  04A2	DF 7D F7	DB	0DFH,7DH,0F7H
+  661:	  04A5	BE FB EF	DB	0BEH,0FBH,0EFH
+  662:
+  663:	  04A8	BE FB EF	DB	0BEH,0FBH,0EFH
+  664:	  04AB	7D F7 DF	DB	7DH, 0F7H,0DFH
+  665:	  04AE	FB EF BE	DB	0FBH,0EFH,0BEH
+  666:	  04B1	F7 DF 7D	DB	0F7H,0DFH,7DH
+  667:	  04B4	EF BE FB	DB	0EFH,0BEH,0FBH
+  668:	  04B7	DF 7D F7	DB	0DFH,7DH,0F7H
+  669:	  04BA	BE FB EF	DB	0BEH,0FBH,0EFH
+  670:	  04BD	7D F7 DF	DB	7DH,0F7H,0DFH
+  671:
+  672:	  04C0	7D F7 DF	DB	7DH,0F7H,0DFH
+  673:	  04C3	FB EF BE	DB	0FBH,0EFH,0BEH
+  674:	  04C6	F7 DF 7D	DB	0F7H, 0DFH,7DH
+  675:	  04C9	EF BE FB	DB	0EFH,0BEH,0FBH
+  676:	  04CC	DF 7D F7	DB	0DFH,7DH,0F7H
+  677:	  04CF	BE FB EF	DB	0BEH,0FBH,0EFH
+  678:	  04D2	7D F7 DF	DB	7DH,0F7H,0DFH
+  679:	  04D5	FB EF BE	DB	0FBH,0EFH,0BEH
+  680:
+  681:	  04D8	99		DB	099H
+  682:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  683:	  04D9			HU_PHOANG_PT:
+  684:				;2 phuong hoang
+  685:				;xoay phai trai
+  686:	  04D9	FF FF FF	DB	0FFH,0FFH,0FFH
+  687:	  04DC	03 E0 3E	DB	3H,0E0H,3EH
+  688:	  04DF	07 C0 7C	DB	7H,0C0H,7CH
+  689:	  04E2	0F C0 FC	DB	0FH,0C0H,0FCH
+  690:	  04E5	1F 81 F8	DB	1FH,81H,0F8H
+  691:	  04E8	0F C0 FC	DB	0FH,0C0H,0FCH
+  692:	  04EB	07 E0 7E	DB	7H,0E0H,7EH
+  693:	  04EE	03 E0 3E	DB	3H,0E0H,3EH
+  694:
+  695:	  04F1	FF FF FF	DB	0FFH,0FFH,0FFH
+  696:	  04F4	07 C0 7C	DB	7H,0C0H,7CH
+  697:	  04F7	0F 80 F8	DB	0FH,80H,0F8H
+  698:	  04FA	1F 81 F8	DB	1FH,81H,0F8H
+  699:	  04FD	3F 03 F0	DB	3FH,3H,0F0H
+  700:	  0500	1F 81 F8	DB	1FH,81H,0F8H
+  701:	  0503	0F C0 FC	DB	0FH,0C0H,0FCH
+  702:	  0506	07 C0 7C	DB	7H,0C0H,7CH
+  703:
+  704:	  0509	FF FF FF	DB	0FFH,0FFH,0FFH
+  705:	  050C	0F 80 F8	DB	0FH,80H,0F8H
+  706:	  050F	1F 01 F0	DB	1FH,1H,0F0H
+  707:	  0512	3F 03 F0	DB	3FH,3H,0F0H
+  708:	  0515	7E 07 E0	DB	7EH,7H,0E0H
+  709:	  0518	3F 03 F0	DB	3FH,3H,0F0H
+  710:	  051B	1F 81 F8	DB	1FH,81H,0F8H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 14
+
+
+
+ Line  I  Addr  Code            Source
+
+  711:	  051E	0F 80 F8	DB	0FH,80H,0F8H
+  712:
+  713:	  0521	FF FF FF	DB	0FFH,0FFH,0FFH
+  714:	  0524	1F 01 F0	DB	1FH,1H,0F0H
+  715:	  0527	3E 03 E0	DB	3EH,3H,0E0H
+  716:	  052A	7E 07 E0	DB	7EH,7H,0E0H
+  717:	  052D	FC 0F C0	DB	0FCH,0FH,0C0H
+  718:	  0530	7E 07 E0	DB	7EH,7H,0E0H
+  719:	  0533	3F 03 F0	DB	3FH,3H,0F0H
+  720:	  0536	1F 01 F0	DB	1FH,1H,0F0H
+  721:
+  722:	  0539	FF FF FF	DB	0FFH,0FFH,0FFH
+  723:	  053C	3E 03 E0	DB	3EH,3H,0E0H
+  724:	  053F	7C 07 C0	DB	7CH,7H,0C0H
+  725:	  0542	FC 0F C0	DB	0FCH,0FH,0C0H
+  726:	  0545	F8 1F 81	DB	0F8H,1FH,81H
+  727:	  0548	FC 0F C0	DB	0FCH,0FH,0C0H
+  728:	  054B	7E 07 E0	DB	7EH,7H,0E0H
+  729:	  054E	3E 03 E0	DB	3EH,3H ,0E0H
+  730:
+  731:	  0551	FF FF FF	DB	0FFH,0FFH,0FFH
+  732:	  0554	7C 07 C0	DB	7CH,7H,0C0H
+  733:	  0557	F8 0F 80	DB	0F8H,0FH,80H
+  734:	  055A	F8 1F 81	DB	0F8H,1FH,81H
+  735:	  055D	F0 3F 03	DB	0F0H,3FH,3H
+  736:	  0560	F8 1F 81	DB	0F8H,1FH,81H
+  737:	  0563	FC 0F C0	DB	0FCH,0FH,0C0H
+  738:	  0566	7C 07 C0	DB	7CH,7H ,0C0H
+  739:
+  740:	  0569	FF FF FF	DB	0FFH,0FFH,0FFH
+  741:	  056C	F8 0F 80	DB	0F8H,0FH,80H
+  742:	  056F	F0 1F 01	DB	0F0H,1FH,1H
+  743:	  0572	F0 3F 03	DB	0F0H,3FH,3H
+  744:	  0575	E0 7E 07	DB	0E0H,7EH,7H
+  745:	  0578	F0 3F 03	DB	0F0H,3FH,3H
+  746:	  057B	F8 1F 81	DB	0F8H,1FH,81H
+  747:	  057E	F8 0F 80	DB	0F8H,0FH,80H
+  748:
+  749:	  0581	FF FF FF	DB	0FFH,0FFH,0FFH
+  750:	  0584	F0 1F 01	DB	0F0H,1FH,1H
+  751:	  0587	E0 3E 03	DB	0E0H,3EH,3H
+  752:	  058A	E0 7E 07	DB	0E0H,7EH,7H
+  753:	  058D	C0 FC 0F	DB	0C0H,0FCH,0FH
+  754:	  0590	E0 7E 07	DB	0E0H,7EH,7H
+  755:	  0593	F0 3F 03	DB	0F0H,3FH,3H
+  756:	  0596	F0 1F 01	DB	0F0H ,1FH  ,1H
+  757:
+  758:	  0599	FF FF FF	DB	0FFH,0FFH,0FFH
+  759:	  059C	E0 3E 03	DB	0E0H,3EH,3H
+  760:	  059F	C0 7C 07	DB	0C0H,7CH,7H
+  761:	  05A2	C0 FC 0F	DB	0C0H,0FCH,0FH
+  762:	  05A5	81 F8 1F	DB	81H,0F8H,1FH
+  763:	  05A8	C0 FC 0F	DB	0C0H,0FCH,0FH
+  764:	  05AB	E0 7E 07	DB	0E0H,7EH,7H
+  765:	  05AE	E0 3E 03	DB	0E0H,3EH,3H
+  766:
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 15
+
+
+
+ Line  I  Addr  Code            Source
+
+  767:	  05B1	FF FF FF	DB	0FFH,0FFH,0FFH
+  768:	  05B4	C0 7C 07	DB	0C0H,7CH,7H
+  769:	  05B7	80 F8 0F	DB	80H,0F8H,0FH
+  770:	  05BA	81 F8 1F	DB	81H,0F8H,1FH
+  771:	  05BD	03 F0 3F	DB	3H,0F0H,3FH
+  772:	  05C0	81 F8 1F	DB	81H,0F8H,1FH
+  773:	  05C3	C0 FC 0F	DB	0C0H,0FCH,0FH
+  774:	  05C6	C0 7C 07	DB	0C0H ,7CH,7H
+  775:
+  776:	  05C9	FF FF FF	DB	0FFH,0FFH,0FFH
+  777:	  05CC	80 F8 0F	DB	80H,0F8H,0FH
+  778:	  05CF	01 F0 1F	DB	1H,0F0H,1FH
+  779:	  05D2	03 F0 3F	DB	3H,0F0H,3FH
+  780:	  05D5	07 E0 7E	DB	7H,0E0H,7EH
+  781:	  05D8	03 F0 3F	DB	3H,0F0H,3FH
+  782:	  05DB	81 F8 1F	DB	81H,0F8H,1FH
+  783:	  05DE	80 F8 0F	DB	80H,0F8H,0FH
+  784:
+  785:	  05E1	FF FF FF	DB	0FFH,0FFH,0FFH
+  786:	  05E4	01 F0 1F	DB	1H,0F0H,1FH
+  787:	  05E7	03 E0 3E	DB	3H,0E0H,3EH
+  788:	  05EA	07 E0 7E	DB	7H,0E0H,7EH
+  789:	  05ED	0F C0 FC	DB	0FH,0C0H,0FCH
+  790:	  05F0	07 E0 7E	DB	7H,0E0H,7EH
+  791:	  05F3	03 F0 3F	DB	3H,0F0H,3FH
+  792:	  05F6	01 F0 1F	DB	1H,0F0H,1FH
+  793:
+  794:	  05F9	99		DB	099H
+  795:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  796:	  05FA			HU_HOASANG_PT:
+  797:				;hoa sang 4 canh
+  798:				;xoay trai phai
+  799:	  05FA	00 00 00	DB	0H,0H,0H
+  800:	  05FD	82 08 20	DB	82H,8H,20H
+  801:	  0600	82 08 20	DB	82H,8H,20H
+  802:	  0603	C7 1C 71	DB	0C7H,1CH,71H
+  803:	  0606	C7 1C 71	DB	0C7H,1CH,71H
+  804:	  0609	EF BE FB	DB	0EFH,0BEH,0FBH
+  805:	  060C	EF BE FB	DB	0EFH,0BEH,0FBH
+  806:	  060F	FF FF FF	DB	0FFH,0FFH, 0FFH
+  807:
+  808:	  0612	00 00 00	DB	0H,0H,0H
+  809:	  0615	41 04 10	DB	41H,4H,10H
+  810:	  0618	41 04 10	DB	41H,4H,10H
+  811:	  061B	E3 8E 38	DB	0E3H,8EH,38H
+  812:	  061E	E3 8E 38	DB	0E3H,8EH,38H
+  813:	  0621	F7 DF 7D	DB	0F7H,0DFH,7DH
+  814:	  0624	F7 DF 7D	DB	0F7H,0DFH,7DH
+  815:	  0627	FF FF FF	DB	0FFH, 0FFH,0FFH
+  816:
+  817:	  062A	00 00 00	DB	0H,0H,0H
+  818:	  062D	20 82 08	DB   20H,82H,8H
+  819:	  0630	20 82 08	DB	20H,82H,8H
+  820:	  0633	71 C7 1C	DB	71H,0C7H,1CH
+  821:	  0636	71 C7 1C	DB	71H,0C7H,1CH
+  822:	  0639	FB EF BE	DB	0FBH,0EFH,0BEH
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 16
+
+
+
+ Line  I  Addr  Code            Source
+
+  823:	  063C	FB EF BE	DB	0FBH,0EFH,0BEH
+  824:	  063F	FF FF FF	DB	0FFH,0FFH,0FFH
+  825:
+  826:	  0642	00 00 00	DB	0H,0H,0H
+  827:	  0645	10 41 04	DB 	10H,41H,4H
+  828:	  0648	10 41 04	DB	10H,41H,4H
+  829:	  064B	38 E3 8E	DB	38H,0E3H,8EH
+  830:	  064E	38 E3 8E	DB	38H,0E3H,8EH
+  831:	  0651	7D F7 DF	DB	7DH,0F7H,0DFH
+  832:	  0654	7D F7 DF	DB	7DH,0F7H,0DFH
+  833:	  0657	FF FF FF	DB	0FFH,0FFH,0FFH
+  834:
+  835:	  065A	00 00 00	DB	0H, 0H,0H
+  836:	  065D	08 20 82	DB  8H,20H,82H
+  837:	  0660	08 20 82	DB	8H,20H,82H
+  838:	  0663	1C 71 C7	DB	1CH,71H,0C7H
+  839:	  0666	1C 71 C7	DB	1CH,71H,0C7H
+  840:	  0669	BE FB EF	DB	0BEH,0FBH,0EFH
+  841:	  066C	BE FB EF	DB	0BEH,0FBH,0EFH
+  842:	  066F	FF FF FF	DB	0FFH,0FFH,0FFH
+  843:
+  844:	  0672	00 00 00	DB	0H,0H,0H
+  845:	  0675	04 10 41	DB	4H,10H,41H
+  846:	  0678	04 10 41	DB	4H,10H, 41H
+  847:	  067B	8E 38 E3	DB	8EH,38H,0E3H
+  848:	  067E	8E 38 E3	DB	8EH,38H,0E3H
+  849:	  0681	DF 7D F7	DB	0DFH,7DH,0F7H
+  850:	  0684	DF 7D F7	DB	0DFH,7DH,0F7H
+  851:	  0687	FF FF FF	DB	0FFH, 0FFH,0FFH
+  852:
+  853:	  068A	99		DB	099H
+  854:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  855:	  068B			HU_HOAVIEN_PT:
+  856:				;hoa vien sang 4
+  857:				;canh xoay phai trai
+  858:	  068B	7D F7 DF	DB	7DH,0F7H,0DFH
+  859:	  068E	7D F7 DF	DB	7DH,0F7H,0DFH
+  860:	  0691	BA EB AE	DB	0BAH,0EBH,0AEH
+  861:	  0694	BA EB AE	DB	0BAH,0EBH,0AEH
+  862:	  0697	D7 5D 75	DB	0D7H,5DH,75H
+  863:	  069A	D7 5D 75	DB	0D7H,5DH,75H
+  864:	  069D	EF BE FB	DB	0EFH,0BEH,0FBH
+  865:	  06A0	EF BE FB	DB 	0EFH,0BEH,0FBH
+  866:
+  867:	  06A3	FB EF BE	DB	0FBH, 0EFH,0BEH
+  868:	  06A6	FB EF BE	DB	0FBH,0EFH,0BEH
+  869:	  06A9	75 D7 5D	DB	75H,0D7H,5DH
+  870:	  06AC	75 D7 5D	DB	75H,0D7H,5DH
+  871:	  06AF	AE BA EB	DB	0AEH,0BAH,0EBH
+  872:	  06B2	AE BA EB	DB	0AEH,0BAH,0EBH
+  873:	  06B5	DF 7D F7	DB	0DFH,7DH,0F7H
+  874:	  06B8	DF 7D F7	DB	0DFH,7DH ,0F7H
+  875:
+  876:	  06BB	F7 DF 7D	DB 	0F7H,0DFH,7DH
+  877:	  06BE	F7 DF 7D	DB 	0F7H,0DFH,7DH
+  878:	  06C1	EB AE BA	DB 	0EBH,0AEH,0BAH
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 17
+
+
+
+ Line  I  Addr  Code            Source
+
+  879:	  06C4	EB AE BA	DB   0EBH,0AEH,0BAH
+  880:	  06C7	5D 75 D7	DB 	5DH,75H,0D7H
+  881:	  06CA	5D 75 D7	DB 	5DH,75H,0D7H
+  882:	  06CD	BE FB EF	DB	0BEH,0FBH,0EFH
+  883:	  06D0	BE FB EF	DB 	0BEH,0FBH,0EFH
+  884:
+  885:	  06D3	EF BE FB	DB 	0EFH,0BEH,0FBH
+  886:	  06D6	EF BE FB	DB 	0EFH,0BEH,0FBH
+  887:	  06D9	D7 5D 75	DB 	0D7H,5DH,75H
+  888:	  06DC	D7 5D 75	DB 	0D7H,5DH,75H
+  889:	  06DF	BA EB AE	DB	0BAH,0EBH,0AEH
+  890:	  06E2	BA EB AE	DB	0BAH,0EBH,0AEH
+  891:	  06E5	7D F7 DF	DB	7DH,0F7H,0DFH
+  892:	  06E8	7D F7 DF	DB 	7DH,0F7H,0DFH
+  893:
+  894:	  06EB	DF 7D F7	DB	0DFH,7DH,0F7H
+  895:	  06EE	DF 7D F7	DB 	0DFH,7DH,0F7H
+  896:	  06F1	AE BA EB	DB	0AEH,0BAH,0EBH
+  897:	  06F4	AE BA EB	DB 	0AEH,0BAH,0EBH
+  898:	  06F7	75 D7 5D	DB	75H,0D7H,5DH
+  899:	  06FA	75 D7 5D	DB 	75H,0D7H,5DH
+  900:	  06FD	FB EF BE	DB 	0FBH,0EFH,0BEH
+  901:	  0700	FB EF BE	DB	0FBH,0EFH ,0BEH
+  902:
+  903:	  0703	BE FB EF	DB	0BEH,0FBH,0EFH
+  904:	  0706	BE FB EF	DB	0BEH,0FBH,0EFH
+  905:	  0709	5D 75 D7	DB	5DH,75H,0D7H
+  906:	  070C	5D 75 D7	DB 	5DH,75H,0D7H
+  907:	  070F	EB AE BA	DB 	0EBH,0AEH,0BAH
+  908:	  0712	EB AE BA	DB 	0EBH,0AEH,0BAH
+  909:	  0715	F7 DF 7D	DB 	0F7H,0DFH,7DH
+  910:	  0718	F7 DF 7D	DB 	0F7H ,0DFH,7DH
+  911:
+  912:	  071B	99		DB 099H
+  913:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  914:	  071C			HU_HOATAT_PT:
+  915:				;hoa tat 4 canh
+  916:				;xoay phai trai
+  917:	  071C	08 20 82	DB	8H,20H,82H
+  918:	  071F	1C 71 C7	DB	1CH,71H,0C7H
+  919:	  0722	14 51 45	DB	14H,51H,45H
+  920:	  0725	B6 DB 6D	DB	0B6H,0DBH,6DH
+  921:	  0728	A2 8A 28	DB	0A2H,8AH,28H
+  922:	  072B	E3 8E 38	DB	0E3H,8EH,38H
+  923:	  072E	41 04 10	DB	41H,4H,10H
+  924:	  0731	41 04 10	DB	41H,4H,10H
+  925:
+  926:	  0734	10 41 04	DB	10H,41H,4H
+  927:	  0737	38 E3 8E	DB	38H,0E3H,8EH
+  928:	  073A	28 A2 8A	DB	28H,0A2H,8AH
+  929:	  073D	6D B6 DB	DB	6DH,0B6H,0DBH
+  930:	  0740	45 14 51	DB	45H,14H,51H
+  931:	  0743	C7 1C 71	DB	0C7H,1CH,71H
+  932:	  0746	82 08 20	DB	82H,8H,20H
+  933:	  0749	82 08 20	DB	82H,8H,20H
+  934:
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 18
+
+
+
+ Line  I  Addr  Code            Source
+
+  935:	  074C	20 82 08	DB	20H,82H,8H
+  936:	  074F	71 C7 1C	DB	71H,0C7H,1CH
+  937:	  0752	51 45 14	DB	51H,45H,14H
+  938:	  0755	DB 6D B6	DB	0DBH,6DH,0B6H
+  939:	  0758	8A 28 A2	DB	8AH,28H,0A2H
+  940:	  075B	8E 38 E3	DB	8EH,38H,0E3H
+  941:	  075E	04 10 41	DB	4H,10H,41H
+  942:	  0761	04 10 41	DB	4H,10H,41H
+  943:
+  944:	  0764	41 04 10	DB	41H,4H,10H
+  945:	  0767	E3 8E 38	DB	0E3H,8EH,38H
+  946:	  076A	A2 8A 28	DB	0A2H,8AH,28H
+  947:	  076D	B6 DB 6D	DB	0B6H,0DBH,6DH
+  948:	  0770	14 51 45	DB	14H,51H,45H
+  949:	  0773	1C 71 C7	DB	1CH,71H,0C7H
+  950:	  0776	08 20 82	DB	8H,20H,82H
+  951:	  0779	08 20 82	DB	8H,20H,82H
+  952:
+  953:	  077C	82 08 20	DB  82H,8H,20H
+  954:	  077F	C7 1C 71	DB 	0C7H,1CH,71H
+  955:	  0782	45 14 51	DB	45H,14H,51H
+  956:	  0785	6D B6 DB	DB	6DH,0B6H,0DBH
+  957:	  0788	28 A2 8A	DB	28H,0A2H,8AH
+  958:	  078B	38 E3 8E	DB	38H,0E3H,8EH
+  959:	  078E	10 41 04	DB	10H,41H,4H
+  960:	  0791	10 41 04	DB	10H,41H,4H
+  961:
+  962:	  0794	04 10 41	DB	4H,10H,41H
+  963:	  0797	8E 38 E3	DB	8EH,38H,0E3H
+  964:	  079A	8A 28 A2	DB	8AH,28H,0A2H
+  965:	  079D	DB 6D B6	DB	0DBH,6DH,0B6H
+  966:	  07A0	51 45 14	DB	51H,45H,14H
+  967:	  07A3	71 C7 1C	DB	71H,0C7H,1CH
+  968:	  07A6	20 82 08	DB	20H,82H,8H
+  969:	  07A9	20 82 08	DB	20H,82H, 8H
+  970:
+  971:	  07AC	99		DB	099H
+  972:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  973:	  07AD			HU_HOANO_MOC:
+  974:				;hoa 4 canh, tat no
+  975:				;tu trong ra ngoai
+  976:	  07AD	00 00 00	DB	0H,0H,0H
+  977:	  07B0	FF FF FF	DB	0FFH,0FFH,0FFH
+  978:	  07B3	FF FF FF	DB	0FFH,0FFH,0FFH
+  979:	  07B6	FF FF FF	DB	0FFH,0FFH,0FFH
+  980:	  07B9	FF FF FF	DB	0FFH,0FFH,0FFH
+  981:	  07BC	FF FF FF	DB	0FFH,0FFH,0FFH
+  982:	  07BF	FF FF FF	DB	0FFH,0FFH,0FFH
+  983:	  07C2	FF FF FF	DB	0FFH,0FFH,0FFH
+  984:
+  985:	  07C5	41 04 10	DB	41H,4H,10H
+  986:	  07C8	00 00 00	DB	0H,0H,0H
+  987:	  07CB	FF FF FF	DB	0FFH,0FFH,0FFH
+  988:	  07CE	FF FF FF	DB	0FFH,0FFH,0FFH
+  989:	  07D1	FF FF FF	DB	0FFH,0FFH,0FFH
+  990:	  07D4	FF FF FF	DB	0FFH,0FFH,0FFH
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 19
+
+
+
+ Line  I  Addr  Code            Source
+
+  991:	  07D7	FF FF FF	DB	0FFH,0FFH,0FFH
+  992:	  07DA	FF FF FF	DB	0FFH,0FFH,0FFH
+  993:
+  994:	  07DD	41 04 10	DB	41H,4H,10H
+  995:	  07E0	41 04 10	DB	41H,4H,10H
+  996:	  07E3	00 00 00	DB	0H,0H,0H
+  997:	  07E6	FF FF FF	DB	0FFH,0FFH,0FFH
+  998:	  07E9	FF FF FF	DB	0FFH,0FFH,0FFH
+  999:	  07EC	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1000:	  07EF	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1001:	  07F2	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1002:
+ 1003:	  07F5	A2 8A 28	DB	0A2H,8AH,28H
+ 1004:	  07F8	41 04 10	DB	41H,4H,10H
+ 1005:	  07FB	41 04 10	DB	41H,4H,10H
+ 1006:	  07FE	00 00 00	DB	0H,0H,0H
+ 1007:	  0801	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1008:	  0804	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1009:	  0807	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1010:	  080A	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1011:
+ 1012:	  080D	A2 8A 28	DB	0A2H,8AH,28H
+ 1013:	  0810	A2 8A 28	DB	0A2H,8AH,28H
+ 1014:	  0813	41 04 10	DB	41H,4H,10H
+ 1015:	  0816	41 04 10	DB	41H,4H,10H
+ 1016:	  0819	00 00 00	DB	0H,0H,0H
+ 1017:	  081C	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1018:	  081F	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1019:	  0822	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1020:
+ 1021:	  0825	14 51 45	DB	14H,51H,45H
+ 1022:	  0828	A2 8A 28	DB	0A2H,8AH,28H
+ 1023:	  082B	A2 8A 28	DB	0A2H,8AH,28H
+ 1024:	  082E	41 04 10	DB	41H,4H,10H
+ 1025:	  0831	41 04 10	DB	41H,4H,10H
+ 1026:	  0834	00 00 00	DB	0H,0H,0H
+ 1027:	  0837	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1028:	  083A	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1029:
+ 1030:	  083D	14 51 45	DB	14H,51H,45H
+ 1031:	  0840	14 51 45	DB	14H,51H,45H
+ 1032:	  0843	A2 8A 28	DB	0A2H,8AH,28H
+ 1033:	  0846	A2 8A 28	DB	0A2H,8AH,28H
+ 1034:	  0849	41 04 10	DB	41H,4H,10H
+ 1035:	  084C	41 04 10	DB	41H,4H,10H
+ 1036:	  084F	00 00 00	DB	0H,0H,0H
+ 1037:	  0852	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1038:
+ 1039:	  0855	99		DB	099H
+ 1040:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 1041:	  0856			 HU_HOANO_CHAY:
+ 1042:				;hoa 4 canh, tat no
+ 1043:				;tu trong ra ngoai
+ 1044:	  0856	08 20 80	DB	8H,20H,80H
+ 1045:	  0859	14 51 45	DB	14H,51H,45H
+ 1046:	  085C	14 51 45	DB	14H,51H,45H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 20
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1047:	  085F	A2 8A 28	DB	0A2H,8AH,28H
+ 1048:	  0862	A2 8A 28	DB	0A2H,8AH,28H
+ 1049:	  0865	41 04 10	DB	41H,4H,10H
+ 1050:	  0868	41 04 10	DB	41H,4H,10H
+ 1051:	  086B	00 00 00	DB	0H,0H,0H
+ 1052:
+ 1053:	  086E	08 20 80	DB	8H,20H,80H
+ 1054:	  0871	08 20 80	DB	8H,20H,80H
+ 1055:	  0874	14 51 45	DB	14H,51H,45H
+ 1056:	  0877	14 51 45	DB	14H,51H,45H
+ 1057:	  087A	A2 8A 28	DB	0A2H,8AH,28H
+ 1058:	  087D	A2 8A 28	DB	0A2H,8AH,28H
+ 1059:	  0880	41 04 10	DB	41H,4H,10H
+ 1060:	  0883	41 04 10	DB	41H,4H,10H
+ 1061:
+ 1062:	  0886	00 00 00	DB	0H,0H,0H
+ 1063:	  0889	08 20 80	DB	8H,20H,80H
+ 1064:	  088C	08 20 80	DB	8H,20H,80H
+ 1065:	  088F	14 51 45	DB	14H,51H,45H
+ 1066:	  0892	14 51 45	DB	14H,51H,45H
+ 1067:	  0895	A2 8A 28	DB	0A2H,8AH,28H
+ 1068:	  0898	A2 8A 28	DB	0A2H,8AH,28H
+ 1069:	  089B	41 04 10	DB	41H,4H,10H
+ 1070:
+ 1071:	  089E	00 00 00	DB	0H,0H,0H
+ 1072:	  08A1	00 00 00	DB	0H,0H,0H
+ 1073:	  08A4	08 20 80	DB	8H,20H,80H
+ 1074:	  08A7	08 20 80	DB	8H,20H,80H
+ 1075:	  08AA	14 51 45	DB	14H,51H,45H
+ 1076:	  08AD	14 51 45	DB	14H,51H,45H
+ 1077:	  08B0	A2 8A 28	DB	0A2H,8AH,28H
+ 1078:	  08B3	A2 8A 28	DB	0A2H,8AH,28H
+ 1079:
+ 1080:	  08B6	08 20 82	DB	8H,20H,82H
+ 1081:	  08B9	00 00 00	DB	0H,0H,0H
+ 1082:	  08BC	00 00 00	DB	0H,0H,0H
+ 1083:	  08BF	08 20 80	DB	8H,20H,80H
+ 1084:	  08C2	08 20 80	DB	8H,20H,80H
+ 1085:	  08C5	14 51 45	DB	14H,51H,45H
+ 1086:	  08C8	14 51 45	DB	14H,51H,45H
+ 1087:	  08CB	A2 8A 28	DB	0A2H,8AH,28H
+ 1088:
+ 1089:	  08CE	08 20 82	DB	8H,20H,82H
+ 1090:	  08D1	08 20 82	DB	8H,20H,82H
+ 1091:	  08D4	00 00 00	DB	0H,0H,0H
+ 1092:	  08D7	00 00 00	DB	0H,0H,0H
+ 1093:	  08DA	08 20 80	DB	8H,20H,80H
+ 1094:	  08DD	08 20 80	DB	8H,20H,80H
+ 1095:	  08E0	14 51 45	DB	14H,51H,45H
+ 1096:	  08E3	14 51 45	DB	14H,51H,45H
+ 1097:
+ 1098:	  08E6	14 51 45	DB	14H,51H,45H
+ 1099:	  08E9	08 20 82	DB	8H,20H,82H
+ 1100:	  08EC	08 20 82	DB	8H,20H,82H
+ 1101:	  08EF	00 00 00	DB	0H,0H,0H
+ 1102:	  08F2	00 00 00	DB	0H,0H,0H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 21
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1103:	  08F5	08 20 80	DB	8H,20H,80H
+ 1104:	  08F8	08 20 80	DB	8H,20H,80H
+ 1105:	  08FB	14 51 45	DB	14H,51H,45H
+ 1106:
+ 1107:	  08FE	14 51 45	DB	14H,51H,45H
+ 1108:	  0901	14 51 45	DB	14H,51H,45H
+ 1109:	  0904	08 20 82	DB	8H,20H,82H
+ 1110:	  0907	08 20 82	DB	8H,20H,82H
+ 1111:	  090A	00 00 00	DB	0H,0H,0H
+ 1112:	  090D	00 00 00	DB	0H,0H,0H
+ 1113:	  0910	08 20 80	DB	8H,20H,80H
+ 1114:	  0913	08 20 80	DB	8H,20H,80H
+ 1115:
+ 1116:	  0916	A2 8A 28	DB	0A2H,8AH,28H
+ 1117:	  0919	14 51 45	DB	14H,51H,45H
+ 1118:	  091C	14 51 45	DB	14H,51H,45H
+ 1119:	  091F	08 20 82	DB	8H,20H,82H
+ 1120:	  0922	08 20 82	DB	8H,20H,82H
+ 1121:	  0925	00 00 00	DB	0H,0H,0H
+ 1122:	  0928	00 00 00	DB	0H,0H,0H
+ 1123:	  092B	08 20 80	DB	8H,20H,80H
+ 1124:
+ 1125:	  092E	A2 8A 28	DB	0A2H,8AH,28H
+ 1126:	  0931	A2 8A 28	DB	0A2H,8AH,28H
+ 1127:	  0934	14 51 45	DB	14H,51H,45H
+ 1128:	  0937	14 51 45	DB	14H,51H,45H
+ 1129:	  093A	08 20 82	DB	8H,20H,82H
+ 1130:	  093D	08 20 82	DB	8H,20H,82H
+ 1131:	  0940	00 00 00	DB	0H,0H,0H
+ 1132:	  0943	00 00 00	DB	0H,0H,0H
+ 1133:
+ 1134:	  0946	41 04 10	DB	41H,4H,10H
+ 1135:	  0949	A2 8A 28	DB	0A2H,8AH,28H
+ 1136:	  094C	A2 8A 28	DB	0A2H,8AH,28H
+ 1137:	  094F	14 51 45	DB	14H,51H,45H
+ 1138:	  0952	14 51 45	DB	14H,51H,45H
+ 1139:	  0955	08 20 82	DB	8H,20H,82H
+ 1140:	  0958	08 20 82	DB	8H,20H,82H
+ 1141:	  095B	00 00 00	DB	0H,0H,0H
+ 1142:
+ 1143:	  095E	41 04 10	DB	41H,4H,10H
+ 1144:	  0961	41 04 10	DB	41H,4H,10H
+ 1145:	  0964	A2 8A 28	DB	0A2H,8AH,28H
+ 1146:	  0967	A2 8A 28	DB	0A2H,8AH,28H
+ 1147:	  096A	14 51 45	DB	14H,51H,45H
+ 1148:	  096D	14 51 45	DB	14H,51H,45H
+ 1149:	  0970	08 20 82	DB	8H,20H,82H
+ 1150:	  0973	08 20 82	DB	8H,20H,82H
+ 1151:
+ 1152:	  0976	00 00 00	DB	0H,0H,0H
+ 1153:	  0979	41 04 10	DB	41H,4H,10H
+ 1154:	  097C	41 04 10	DB	41H,4H,10H
+ 1155:	  097F	A2 8A 28	DB	0A2H,8AH,28H
+ 1156:	  0982	A2 8A 28	DB	0A2H,8AH,28H
+ 1157:	  0985	14 51 45	DB	14H,51H,45H
+ 1158:	  0988	14 51 45	DB	14H,51H,45H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 22
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1159:	  098B	08 20 82	DB	8H,20H,82H
+ 1160:
+ 1161:	  098E	00 00 00	DB	0H,0H,0H
+ 1162:	  0991	00 00 00	DB	0H,0H,0H
+ 1163:	  0994	41 04 10	DB	41H,4H,10H
+ 1164:	  0997	41 04 10	DB	41H,4H,10H
+ 1165:	  099A	A2 8A 28	DB	0A2H,8AH,28H
+ 1166:	  099D	A2 8A 28	DB	0A2H,8AH,28H
+ 1167:	  09A0	14 51 45	DB	14H,51H,45H
+ 1168:	  09A3	14 51 45	DB	14H,51H,45H
+ 1169:
+ 1170:	  09A6	41 04 10	DB	41H,4H,10H
+ 1171:	  09A9	00 00 00	DB	0H,0H,0H
+ 1172:	  09AC	00 00 00	DB	0H,0H,0H
+ 1173:	  09AF	41 04 10	DB	41H,4H,10H
+ 1174:	  09B2	41 04 10	DB	41H,4H,10H
+ 1175:	  09B5	A2 8A 28	DB	0A2H,8AH,28H
+ 1176:	  09B8	A2 8A 28	DB	0A2H,8AH,28H
+ 1177:	  09BB	14 51 45	DB	14H,51H,45H
+ 1178:
+ 1179:	  09BE	41 04 10	DB	41H,4H,10H
+ 1180:	  09C1	41 04 10	DB	41H,4H,10H
+ 1181:	  09C4	00 00 00	DB	0H,0H,0H
+ 1182:	  09C7	00 00 00	DB	0H,0H,0H
+ 1183:	  09CA	41 04 10	DB	41H,4H,10H
+ 1184:	  09CD	41 04 10	DB	41H,4H,10H
+ 1185:	  09D0	A2 8A 28	DB	0A2H,8AH,28H
+ 1186:	  09D3	A2 8A 28	DB	0A2H,8AH,28H
+ 1187:
+ 1188:	  09D6	A2 8A 28	DB	0A2H,8AH,28H
+ 1189:	  09D9	41 04 10	DB	41H,4H,10H
+ 1190:	  09DC	41 04 10	DB	41H,4H,10H
+ 1191:	  09DF	00 00 00	DB	0H,0H,0H
+ 1192:	  09E2	00 00 00	DB	0H,0H,0H
+ 1193:	  09E5	41 04 10	DB	41H,4H,10H
+ 1194:	  09E8	41 04 10	DB	41H,4H,10H
+ 1195:	  09EB	A2 8A 28	DB	0A2H,8AH,28H
+ 1196:
+ 1197:	  09EE	A2 8A 28	DB	0A2H,8AH,28H
+ 1198:	  09F1	A2 8A 28	DB	0A2H,8AH,28H
+ 1199:	  09F4	41 04 10	DB	41H,4H,10H
+ 1200:	  09F7	41 04 10	DB	41H,4H,10H
+ 1201:	  09FA	00 00 00	DB	0H,0H,0H
+ 1202:	  09FD	00 00 00	DB	0H,0H,0H
+ 1203:	  0A00	41 04 10	DB	41H,4H,10H
+ 1204:	  0A03	41 04 10	DB	41H,4H,10H
+ 1205:
+ 1206:	  0A06	14 51 45	DB	14H,51H, 45H
+ 1207:	  0A09	A2 8A 28	DB	0A2H,8AH,28H
+ 1208:	  0A0C	A2 8A 28	DB	0A2H,8AH,28H
+ 1209:	  0A0F	41 04 10	DB	41H,4H,10H
+ 1210:	  0A12	41 04 10	DB	41H,4H,10H
+ 1211:	  0A15	00 00 00	DB	0H,0H,0H
+ 1212:	  0A18	00 00 00	DB	0H,0H,0H
+ 1213:	  0A1B	41 04 10	DB	41H,4H,10H
+ 1214:
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 23
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1215:	  0A1E	14 51 45	DB	14H,51H, 45H
+ 1216:	  0A21	14 51 45	DB	14H,51H, 45H
+ 1217:	  0A24	A2 8A 28	DB	0A2H,8AH,28H
+ 1218:	  0A27	A2 8A 28	DB	0A2H,8AH,28H
+ 1219:	  0A2A	41 04 10	DB	41H,4H,10H
+ 1220:	  0A2D	41 04 10	DB	41H,4H,10H
+ 1221:	  0A30	00 00 00	DB	0H,0H,0H
+ 1222:	  0A33	00 00 00	DB	0H,0H,0H
+ 1223:
+ 1224:	  0A36	99		DB	099H
+ 1225:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 1226:	  0A37			HU_3CANH_PT:
+ 1227:				;chong chong 3 canh
+ 1228:				;sang xoay phai trai
+ 1229:	  0A37	7F 7F 7F	DB	7FH,7FH,7FH
+ 1230:	  0A3A	3F 3F 3F	DB	3FH,3FH,3FH
+ 1231:	  0A3D	1F 1F 1F	DB	1FH,1FH,1FH
+ 1232:	  0A40	0F 0F 0F	DB	0FH,0FH,0FH
+ 1233:	  0A43	07 07 07	DB	7H,7H,7H
+ 1234:	  0A46	03 03 03	DB	3H,3H,3H
+ 1235:	  0A49	01 01 01	DB	1H,1H,1H
+ 1236:	  0A4C	00 00 00	DB	0H,0H,0H
+ 1237:
+ 1238:	  0A4F	FE FE FE	DB	0FEH,0FEH,0FEH
+ 1239:	  0A52	7E 7E 7E	DB	7EH,7EH,7EH
+ 1240:	  0A55	3E 3E 3E	DB	3EH,3EH,3EH
+ 1241:	  0A58	1E 1E 1E	DB	1EH,1EH,1EH
+ 1242:	  0A5B	0E 0E 0E	DB	0EH,0EH,0EH
+ 1243:	  0A5E	06 06 06	DB	6H,6H,6H
+ 1244:	  0A61	02 02 02	DB	2H,2H,2H
+ 1245:	  0A64	00 00 00	DB	0H,0H,0H
+ 1246:
+ 1247:	  0A67	FD FD FD	DB	0FDH,0FDH,0FDH
+ 1248:	  0A6A	FC FC FC	DB	0FCH,0FCH,0FCH
+ 1249:	  0A6D	7C 7C 7C	DB	7CH,7CH,7CH
+ 1250:	  0A70	3C 3C 3C	DB	3CH,3CH,3CH
+ 1251:	  0A73	1C 1C 1C	DB	1CH,1CH,1CH
+ 1252:	  0A76	0C 0C 0C	DB	0CH,0CH,0CH
+ 1253:	  0A79	04 04 04	DB	4H,4H,4H
+ 1254:	  0A7C	00 00 00	DB	0H,0H,0H
+ 1255:
+ 1256:	  0A7F	FB FB FB	DB 	0FBH,0FBH,0FBH
+ 1257:	  0A82	F9 F9 F9	DB  	0F9H,0F9H,0F9H
+ 1258:	  0A85	F8 F8 F8	DB 	0F8H,0F8H,0F8H
+ 1259:	  0A88	78 78 78	DB 	78H,78H,78H
+ 1260:	  0A8B	38 38 38	DB 	38H,38H,38H
+ 1261:	  0A8E	18 18 18	DB 	18H,18H,18H
+ 1262:	  0A91	08 08 08	DB 	8H,8H,8H
+ 1263:	  0A94	00 00 00	DB 	0H,0H,0H
+ 1264:
+ 1265:	  0A97	F7 F7 F7	DB 	0F7H,0F7H,0F7H
+ 1266:	  0A9A	F3 F3 F3	DB	0F3H,0F3H,0F3H
+ 1267:	  0A9D	F1 F1 F1	DB  	0F1H,0F1H,0F1H
+ 1268:	  0AA0	F0 F0 F0	DB 	0F0H,0F0H,0F0H
+ 1269:	  0AA3	70 70 70	DB	70H,70H,70H
+ 1270:	  0AA6	30 30 30	DB	30H,30H,30H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 24
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1271:	  0AA9	10 10 10	DB	10H,10H,10H
+ 1272:	  0AAC	00 00 00	DB	0H  , 0H ,  0H
+ 1273:
+ 1274:	  0AAF	EF EF EF	DB 	0EFH,0EFH,0EFH
+ 1275:	  0AB2	E7 E7 E7	DB 	0E7H,0E7H,0E7H
+ 1276:	  0AB5	E3 E3 E3	DB	0E3H,0E3H,0E3H
+ 1277:	  0AB8	E1 E1 E1	DB	0E1H,0E1H,0E1H
+ 1278:	  0ABB	E0 E0 E0	DB 	0E0H,0E0H,0E0H
+ 1279:	  0ABE	60 60 60	DB 	60H,60H,60H
+ 1280:	  0AC1	20 20 20	DB 	20H,20H,20H
+ 1281:	  0AC4	00 00 00	DB  	0H,0H,0H
+ 1282:
+ 1283:	  0AC7	DF DF DF	DB	0DFH,0DFH,0DFH
+ 1284:	  0ACA	CF CF CF	DB	0CFH,0CFH,0CFH
+ 1285:	  0ACD	C7 C7 C7	DB	0C7H,0C7H,0C7H
+ 1286:	  0AD0	C3 C3 C3	DB 	0C3H,0C3H,0C3H
+ 1287:	  0AD3	C1 C1 C1	DB 	0C1H,0C1H,0C1H
+ 1288:	  0AD6	C0 C0 C0	DB 	0C0H,0C0H,0C0H
+ 1289:	  0AD9	40 40 40	DB 	40H,40H,40H
+ 1290:	  0ADC	00 00 00	DB 	0H,0H,0H
+ 1291:
+ 1292:	  0ADF	BF BF BF	DB	0BFH,0BFH,0BFH
+ 1293:	  0AE2	9F 9F 9F	DB 	9FH,9FH,9FH
+ 1294:	  0AE5	8F 8F 8F	DB	8FH,8FH,8FH
+ 1295:	  0AE8	87 87 87	DB	87H,87H,87H
+ 1296:	  0AEB	83 83 83	DB	83H,83H,83H
+ 1297:	  0AEE	81 81 81	DB	81H,81H,81H
+ 1298:	  0AF1	80 80 80	DB	80H,80H,80H
+ 1299:	  0AF4	00 00 00	DB 	0H,0H,0H
+ 1300:
+ 1301:	  0AF7	99		DB	099H
+ 1302:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 1303:	  0AF8			HU_2CANH_PT:
+ 1304:				;chong chong 2
+ 1305:				;canh xoay phai trai
+ 1306:	  0AF8	FF BF FB	DB	0FFH,0BFH,0FBH
+ 1307:	  0AFB	FF 8F F8	DB	0FFH,8FH,0F8H
+ 1308:	  0AFE	3F 83 F8	DB	3FH,83H,0F8H
+ 1309:	  0B01	0F 80 F8	DB	0FH,80H,0F8H
+ 1310:	  0B04	03 80 38	DB	3H,80H,38H
+ 1311:	  0B07	01 80 18	DB	1H,80H,18H
+ 1312:	  0B0A	00 80 08	DB	0H,80H,8H
+ 1313:	  0B0D	00 00 00	DB	0H,0H,0H
+ 1314:
+ 1315:	  0B10	FF 7F F7	DB	0FFH,7FH,0F7H
+ 1316:	  0B13	FF 1F F1	DB	0FFH,1FH,0F1H
+ 1317:	  0B16	7F 07 F0	DB	7FH,7H,0F0H
+ 1318:	  0B19	1F 01 F0	DB	1FH,1H,0F0H
+ 1319:	  0B1C	07 00 70	DB	7H,0H,70H
+ 1320:	  0B1F	03 00 30	DB	3H,0H,30H
+ 1321:	  0B22	01 00 10	DB	1H,0H,10H
+ 1322:	  0B25	00 00 00	DB	0H,0H,0H
+ 1323:
+ 1324:	  0B28	FE FF EF	DB	0FEH,0FFH,0EFH
+ 1325:	  0B2B	FE 3F E3	DB 	0FEH,3FH,0E3H
+ 1326:	  0B2E	FE 0F E0	DB	0FEH,0FH,0E0H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 25
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1327:	  0B31	3E 03 E0	DB	3EH,3H,0E0H
+ 1328:	  0B34	0E 00 E0	DB	0EH,0H,0E0H
+ 1329:	  0B37	06 00 60	DB	6H,0H,60H
+ 1330:	  0B3A	02 00 20	DB	2H,0H,20H
+ 1331:	  0B3D	00 00 00	DB	0H,0H,0H
+ 1332:
+ 1333:	  0B40	FD FF DF	DB	0FDH,0FFH,0DFH
+ 1334:	  0B43	FC 7F C7	DB 	0FCH,7FH,0C7H
+ 1335:	  0B46	FC 1F C1	DB	0FCH,1FH,0C1H
+ 1336:	  0B49	7C 07 C0	DB	7CH,7H,0C0H
+ 1337:	  0B4C	1C 01 C0	DB	1CH,1H,0C0H
+ 1338:	  0B4F	0C 00 C0	DB	0CH,0H,0C0H
+ 1339:	  0B52	04 00 40	DB	4H,0H,40H
+ 1340:	  0B55	00 00 00	DB	0H,0H,0H
+ 1341:
+ 1342:	  0B58	FB FF BF	DB	0FBH,0FFH,0BFH
+ 1343:	  0B5B	F8 FF 8F	DB	0F8H,0FFH,8FH
+ 1344:	  0B5E	F8 3F 83	DB	0F8H,3FH,83H
+ 1345:	  0B61	F8 0F 80	DB	0F8H,0FH,80H
+ 1346:	  0B64	38 03 80	DB	38H,3H,80H
+ 1347:	  0B67	18 01 80	DB	18H,1H,80H
+ 1348:	  0B6A	08 00 80	DB	8H,0H,80H
+ 1349:	  0B6D	00 00 00	DB	0H,0H,0H
+ 1350:
+ 1351:	  0B70	F7 FF 7F	DB	0F7H,0FFH,7FH
+ 1352:	  0B73	F1 FF 1F	DB	0F1H,0FFH,1FH
+ 1353:	  0B76	F0 7F 07	DB	0F0H,7FH,7H
+ 1354:	  0B79	F0 1F 01	DB	0F0H,1FH,1H
+ 1355:	  0B7C	70 07 00	DB	70H,7H,0H
+ 1356:	  0B7F	30 03 00	DB	30H,3H,0H
+ 1357:	  0B82	10 01 00	DB	10H,1H,0H
+ 1358:	  0B85	00 00 00	DB	0H,0H,0H
+ 1359:
+ 1360:	  0B88	EF FE FF	DB	0EFH,0FEH,0FFH
+ 1361:	  0B8B	E3 FE 3F	DB	0E3H,0FEH,3FH
+ 1362:	  0B8E	E0 FE 0F	DB	0E0H,0FEH,0FH
+ 1363:	  0B91	E0 3E 03	DB	0E0H,3EH,3H
+ 1364:	  0B94	E0 0E 00	DB	0E0H,0EH,0H
+ 1365:	  0B97	60 06 00	DB	60H,6H,0H
+ 1366:	  0B9A	20 02 00	DB	20H,2H,0H
+ 1367:	  0B9D	00 00 00	DB	0H,0H,0H
+ 1368:
+ 1369:	  0BA0	DF FD FF	DB 	0DFH,0FDH,0FFH
+ 1370:	  0BA3	C7 FC 7F	DB	0C7H,0FCH,7FH
+ 1371:	  0BA6	C1 FC 1F	DB	0C1H,0FCH,1FH
+ 1372:	  0BA9	C0 7C 07	DB	0C0H,7CH,7H
+ 1373:	  0BAC	C0 1C 01	DB	0C0H,1CH,1H
+ 1374:	  0BAF	C0 0C 00	DB	0C0H,0CH,0H
+ 1375:	  0BB2	40 04 00	DB	40H,4H,0H
+ 1376:	  0BB5	00 00 00	DB	0H,0H,0H
+ 1377:
+ 1378:	  0BB8	BF FB FF	DB	0BFH,0FBH,0FFH
+ 1379:	  0BBB	8F F8 FF	DB 	8FH,0F8H,0FFH
+ 1380:	  0BBE	83 F8 3F	DB	83H,0F8H,3FH
+ 1381:	  0BC1	80 F8 0F	DB	80H,0F8H,0FH
+ 1382:	  0BC4	80 38 03	DB	80H,38H,3H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 26
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1383:	  0BC7	80 18 01	DB	80H,18H,1H
+ 1384:	  0BCA	80 08 00	DB	80H,8H,0H
+ 1385:	  0BCD	00 00 00	DB	0H,0H,0H
+ 1386:
+ 1387:	  0BD0	7F F7 FF	DB	7FH,0F7H,0FFH
+ 1388:	  0BD3	1F F1 FF	DB 	1FH,0F1H,0FFH
+ 1389:	  0BD6	07 F0 7F	DB	7H,0F0H,7FH
+ 1390:	  0BD9	01 F0 1F	DB	1H,0F0H,1FH
+ 1391:	  0BDC	00 70 07	DB	0H,70H,7H
+ 1392:	  0BDF	00 30 03	DB	0H,30H,3H
+ 1393:	  0BE2	00 10 01	DB	0H,10H,1H
+ 1394:	  0BE5	00 00 00	DB	0H,0H,0H
+ 1395:
+ 1396:	  0BE8	FF EF FE	DB 	0FFH,0EFH,0FEH
+ 1397:	  0BEB	3F E3 FE	DB  3FH,0E3H,0FEH
+ 1398:	  0BEE	0F E0 FE	DB	0FH,0E0H,0FEH
+ 1399:	  0BF1	03 E0 3E	DB	3H,0E0H,3EH
+ 1400:	  0BF4	00 E0 0E	DB	0H,0E0H,0EH
+ 1401:	  0BF7	00 60 06	DB	0H,60H,6H
+ 1402:	  0BFA	00 20 02	DB	0H,20H,2H
+ 1403:	  0BFD	00 00 00	DB	0H,0H,0H
+ 1404:
+ 1405:	  0C00	FF DF FD	DB	0FFH,0DFH, 0FDH
+ 1406:	  0C03	7F C7 FC	DB	7FH,0C7H,0FCH
+ 1407:	  0C06	1F C1 FC	DB	1FH,0C1H,0FCH
+ 1408:	  0C09	07 C0 7C	DB	7H,0C0H,7CH
+ 1409:	  0C0C	01 C0 1C	DB	1H,0C0H,1CH
+ 1410:	  0C0F	00 C0 0C	DB	0H,0C0H,0CH
+ 1411:	  0C12	00 40 04	DB	0H,40H,4H
+ 1412:	  0C15	00 00 00	DB	0H,0H,0H
+ 1413:
+ 1414:	  0C18	99		DB	099H
+ 1415:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 1416:	  0C19			HU_KIMCUONG_PT:
+ 1417:				;3 canh lon, 3 canh
+ 1418:				;nho xoay phai trai
+ 1419:	  0C19	00 00 00	DB	0H,0H,0H
+ 1420:	  0C1C	11 11 11	DB	11H,11H,11H
+ 1421:	  0C1F	1B 1B 1B	DB	1BH,1BH,1BH
+ 1422:	  0C22	1F 1F 1F	DB	1FH,1FH,1FH
+ 1423:	  0C25	1F 1F 1F	DB	1FH,1FH,1FH
+ 1424:	  0C28	1F 1F 1F	DB	1FH,1FH,1FH
+ 1425:	  0C2B	BF BF BF	DB	0BFH,0BFH,0BFH
+ 1426:	  0C2E	BF BF BF	DB	0BFH,0BFH,0BFH
+ 1427:
+ 1428:	  0C31	00 00 00	DB	0H,0H,0H
+ 1429:	  0C34	22 22 22	DB	22H,22H,22H
+ 1430:	  0C37	36 36 36	DB	36H,36H,36H
+ 1431:	  0C3A	3E 3E 3E	DB	3EH,3EH,3EH
+ 1432:	  0C3D	3E 3E 3E	DB	3EH,3EH,3EH
+ 1433:	  0C40	3E 3E 3E	DB	3EH,3EH,3EH
+ 1434:	  0C43	7F 7F 7F	DB	7FH,7FH,7FH
+ 1435:	  0C46	7F 7F 7F	DB	7FH,7FH,7FH
+ 1436:
+ 1437:	  0C49	00 00 00	DB	0H,0H,0H
+ 1438:	  0C4C	44 44 44	DB	44H,44H,44H
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 27
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1439:	  0C4F	6C 6C 6C	DB	6CH,6CH,6CH
+ 1440:	  0C52	7C 7C 7C	DB	7CH,7CH,7CH
+ 1441:	  0C55	7C 7C 7C	DB	7CH,7CH,7CH
+ 1442:	  0C58	7C 7C 7C	DB	7CH,7CH,7CH
+ 1443:	  0C5B	FE FE FE	DB	0FEH,0FEH,0FEH
+ 1444:	  0C5E	FE FE FE	DB	0FEH,0FEH,0FEH
+ 1445:
+ 1446:	  0C61	00 00 00	DB	0H,0H,0H
+ 1447:	  0C64	88 88 88	DB	88H,88H,88H
+ 1448:	  0C67	D8 D8 D8	DB	0D8H,0D8H,0D8H
+ 1449:	  0C6A	F8 F8 F8	DB	0F8H,0F8H,0F8H
+ 1450:	  0C6D	F8 F8 F8	DB	0F8H,0F8H,0F8H
+ 1451:	  0C70	F8 F8 F8	DB	0F8H,0F8H,0F8H
+ 1452:	  0C73	FD FD FD	DB	0FDH,0FDH,0FDH
+ 1453:	  0C76	FD FD FD	DB	0FDH,0FDH,0FDH
+ 1454:
+ 1455:	  0C79	00 00 00	DB	0H,0H,0H
+ 1456:	  0C7C	11 11 11	DB	11H,11H,11H
+ 1457:	  0C7F	B1 B1 B1	DB	0B1H,0B1H,0B1H
+ 1458:	  0C82	F1 F1 F1	DB	0F1H,0F1H,0F1H
+ 1459:	  0C85	F1 F1 F1	DB	0F1H,0F1H,0F1H
+ 1460:	  0C88	F1 F1 F1	DB	0F1H,0F1H,0F1H
+ 1461:	  0C8B	FB FB FB	DB	0FBH,0FBH,0FBH
+ 1462:	  0C8E	FB FB FB	DB	0FBH,0FBH,0FBH
+ 1463:
+ 1464:	  0C91	00 00 00	DB	0H,0H,0H
+ 1465:	  0C94	22 22 22	DB	22H,22H,22H
+ 1466:	  0C97	63 63 63	DB	63H,63H,63H
+ 1467:	  0C9A	E3 E3 E3	DB	0E3H,0E3H,0E3H
+ 1468:	  0C9D	E3 E3 E3	DB	0E3H,0E3H,0E3H
+ 1469:	  0CA0	E3 E3 E3	DB	0E3H,0E3H,0E3H
+ 1470:	  0CA3	F7 F7 F7	DB	0F7H,0F7H,0F7H
+ 1471:	  0CA6	F7 F7 F7	DB	0F7H,0F7H,0F7H
+ 1472:
+ 1473:	  0CA9	00 00 00	DB	0H,0H,0H
+ 1474:	  0CAC	44 44 44	DB	44H,44H,44H
+ 1475:	  0CAF	C6 C6 C6	DB	0C6H,0C6H,0C6H
+ 1476:	  0CB2	C7 C7 C7	DB	0C7H,0C7H,0C7H
+ 1477:	  0CB5	C7 C7 C7	DB	0C7H,0C7H,0C7H
+ 1478:	  0CB8	C7 C7 C7	DB	0C7H,0C7H,0C7H
+ 1479:	  0CBB	EF EF EF	DB	0EFH,0EFH,0EFH
+ 1480:	  0CBE	EF EF EF	DB	0EFH,0EFH,0EFH
+ 1481:
+ 1482:	  0CC1	00 00 00	 DB	0H,0H,0H
+ 1483:	  0CC4	88 88 88	 DB	88H,88H,88H
+ 1484:	  0CC7	8D 8D 8D	 DB	8DH,8DH,8DH
+ 1485:	  0CCA	8F 8F 8F	 DB	8FH,8FH,8FH
+ 1486:	  0CCD	8F 8F 8F	 DB	8FH,8FH,8FH
+ 1487:	  0CD0	8F 8F 8F	 DB	8FH,8FH,8FH
+ 1488:	  0CD3	DF DF DF	 DB	0DFH,0DFH,0DFH
+ 1489:	  0CD6	DF DF DF	 DB	0DFH,0DFH,0DFH
+ 1490:
+ 1491:	  0CD9	99		DB	099H
+ 1492:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 1493:	  0CDA			HU_3TIA_MOC:
+ 1494:				;3 tia moc tu trong ra
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 28
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1495:	  0CDA	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1496:	  0CDD	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1497:	  0CE0	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1498:	  0CE3	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1499:	  0CE6	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1500:	  0CE9	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1501:	  0CEC	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1502:	  0CEF	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1503:
+ 1504:	  0CF2	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1505:	  0CF5	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1506:	  0CF8	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1507:	  0CFB	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1508:	  0CFE	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1509:	  0D01	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1510:	  0D04	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1511:	  0D07	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1512:
+ 1513:	  0D0A	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1514:	  0D0D	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1515:	  0D10	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1516:	  0D13	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1517:	  0D16	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1518:	  0D19	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1519:	  0D1C	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1520:	  0D1F	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1521:
+ 1522:	  0D22	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1523:	  0D25	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1524:	  0D28	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1525:	  0D2B	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1526:	  0D2E	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1527:	  0D31	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1528:	  0D34	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1529:	  0D37	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1530:
+ 1531:	  0D3A	38 E3 8E	DB	38H,0E3H,8EH
+ 1532:	  0D3D	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1533:	  0D40	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1534:	  0D43	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1535:	  0D46	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1536:	  0D49	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1537:	  0D4C	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1538:	  0D4F	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1539:
+ 1540:	  0D52	38 E3 8E	DB	38H,0E3H,8EH
+ 1541:	  0D55	38 E3 8E	DB	38H,0E3H,8EH
+ 1542:	  0D58	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1543:	  0D5B	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1544:	  0D5E	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1545:	  0D61	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1546:	  0D64	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1547:	  0D67	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1548:
+ 1549:	  0D6A	38 E3 8E	DB	38H,0E3H,8EH
+ 1550:	  0D6D	38 E3 8E	DB	38H,0E3H,8EH
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 29
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1551:	  0D70	38 E3 8E	DB	38H,0E3H,8EH
+ 1552:	  0D73	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1553:	  0D76	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1554:	  0D79	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1555:	  0D7C	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1556:	  0D7F	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1557:
+ 1558:	  0D82	99		DB	099H
+ 1559:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 1560:	  0D83			HU_3TIA_CHAY:
+ 1561:				;chay 3 tia
+ 1562:	  0D83	38 E3 8E	DB	38H,0E3H,8EH
+ 1563:	  0D86	38 E3 8E	DB	38H,0E3H,8EH
+ 1564:	  0D89	38 E3 8E	DB	38H,0E3H,8EH
+ 1565:	  0D8C	38 E3 8E	DB	38H,0E3H,8EH
+ 1566:	  0D8F	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1567:	  0D92	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1568:	  0D95	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1569:	  0D98	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1570:
+ 1571:	  0D9B	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1572:	  0D9E	38 E3 8E	DB	38H,0E3H,8EH
+ 1573:	  0DA1	38 E3 8E	DB	38H,0E3H,8EH
+ 1574:	  0DA4	38 E3 8E	DB	38H,0E3H,8EH
+ 1575:	  0DA7	38 E3 8E	DB	38H,0E3H,8EH
+ 1576:	  0DAA	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1577:	  0DAD	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1578:	  0DB0	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1579:
+ 1580:	  0DB3	00 00 00	DB	0H,0H,0H
+ 1581:	  0DB6	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1582:	  0DB9	38 E3 8E	DB	38H,0E3H,8EH
+ 1583:	  0DBC	38 E3 8E	DB	38H,0E3H,8EH
+ 1584:	  0DBF	38 E3 8E	DB	38H,0E3H,8EH
+ 1585:	  0DC2	38 E3 8E	DB	38H,0E3H,8EH
+ 1586:	  0DC5	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1587:	  0DC8	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1588:
+ 1589:	  0DCB	00 00 00	DB	0H,0H,0H
+ 1590:	  0DCE	AA AA AA	DB	0AAH,0AAH,0AAH
+ 1591:	  0DD1	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1592:	  0DD4	38 E3 8E	DB	38H,0E3H,8EH
+ 1593:	  0DD7	38 E3 8E	DB	38H,0E3H,8EH
+ 1594:	  0DDA	38 E3 8E	DB	38H,0E3H,8EH
+ 1595:	  0DDD	38 E3 8E	DB	38H,0E3H,8EH
+ 1596:	  0DE0	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1597:
+ 1598:	  0DE3	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1599:	  0DE6	55 55 55	DB	055H,055H,055H
+ 1600:	  0DE9	AA AA AA	DB	0AAH,0AAH,0AAH
+ 1601:	  0DEC	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1602:	  0DEF	38 E3 8E	DB	38H,0E3H,8EH
+ 1603:	  0DF2	38 E3 8E	DB	38H,0E3H,8EH
+ 1604:	  0DF5	38 E3 8E	DB	38H,0E3H,8EH
+ 1605:	  0DF8	38 E3 8E	DB	38H,0E3H,8EH
+ 1606:
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 30
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1607:	  0DFB	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1608:	  0DFE	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1609:	  0E01	55 55 55	DB	055H,055H,055H
+ 1610:	  0E04	AA AA AA	DB	0AAH,0AAH,0AAH
+ 1611:	  0E07	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1612:	  0E0A	38 E3 8E	DB	38H,0E3H,8EH
+ 1613:	  0E0D	38 E3 8E	DB	38H,0E3H,8EH
+ 1614:	  0E10	38 E3 8E	DB	38H,0E3H,8EH
+ 1615:
+ 1616:	  0E13	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1617:	  0E16	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1618:	  0E19	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1619:	  0E1C	55 55 55	DB	055H,055H,055H
+ 1620:	  0E1F	AA AA AA	DB	0AAH,0AAH,0AAH
+ 1621:	  0E22	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1622:	  0E25	38 E3 8E	DB	38H,0E3H,8EH
+ 1623:	  0E28	38 E3 8E	DB	38H,0E3H,8EH
+ 1624:
+ 1625:	  0E2B	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1626:	  0E2E	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1627:	  0E31	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1628:	  0E34	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1629:	  0E37	55 55 55	DB	055H,055H,055H
+ 1630:	  0E3A	AA AA AA	DB	0AAH,0AAH,0AAH
+ 1631:	  0E3D	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1632:	  0E40	38 E3 8E	DB	38H,0E3H,8EH
+ 1633:
+ 1634:	  0E43	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1635:	  0E46	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1636:	  0E49	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1637:	  0E4C	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1638:	  0E4F	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1639:	  0E52	55 55 55	DB	055H,055H,055H
+ 1640:	  0E55	AA AA AA	DB	0AAH,0AAH,0AAH
+ 1641:	  0E58	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1642:
+ 1643:	  0E5B	38 E3 8E	DB	38H,0E3H, 8EH
+ 1644:	  0E5E	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1645:	  0E61	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1646:	  0E64	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1647:	  0E67	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1648:	  0E6A	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1649:	  0E6D	55 55 55	DB	055H,055H,055H
+ 1650:	  0E70	AA AA AA	DB	0AAH,0AAH,0AAH
+ 1651:
+ 1652:	  0E73	38 E3 8E	DB	38H,0E3H,8EH
+ 1653:	  0E76	38 E3 8E	DB	38H,0E3H,8EH
+ 1654:	  0E79	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1655:	  0E7C	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1656:	  0E7F	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1657:	  0E82	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1658:	  0E85	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1659:	  0E88	55 55 55	DB	055H,055H,055H
+ 1660:
+ 1661:	  0E8B	38 E3 8E	DB	38H,0E3H,8EH
+ 1662:	  0E8E	38 E3 8E	DB	38H,0E3H,8EH
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 31
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1663:	  0E91	38 E3 8E	DB	38H,0E3H,8EH
+ 1664:	  0E94	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1665:	  0E97	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1666:	  0E9A	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1667:	  0E9D	7D F7 DF	DB	7DH,0F7H,0DFH
+ 1668:	  0EA0	FF FF FF	DB	0FFH,0FFH,0FFH
+ 1669:
+ 1670:	  0EA3	99		DB 099H
+ 1671:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 1672:	  0EA4			HU_CHUVAN_PT:
+ 1673:				;chu van xoay phai-trai
+ 1674:	  0EA4	E7 9E 79	DB	0E7H,9EH,79H
+ 1675:	  0EA7	E7 9E 79	DB	0E7H,9EH,79H
+ 1676:	  0EAA	E7 9E 79	DB	0E7H,9EH,79H
+ 1677:	  0EAD	E7 9E 79	DB	0E7H,9EH,79H
+ 1678:	  0EB0	E7 9E 79	DB	0E7H,9EH,79H
+ 1679:	  0EB3	86 18 61	DB	86H,18H,61H
+ 1680:	  0EB6	86 18 61	DB	86H,18H,61H
+ 1681:	  0EB9	86 18 61	DB	86H,18H,61H
+ 1682:
+ 1683:	  0EBC	CF 3C F3	DB  	0CFH,3CH,0F3H
+ 1684:	  0EBF	CF 3C F3	DB  	0CFH,3CH,0F3H
+ 1685:	  0EC2	CF 3C F3	DB  	0CFH,3CH,0F3H
+ 1686:	  0EC5	CF 3C F3	DB  	0CFH,3CH,0F3H
+ 1687:	  0EC8	CF 3C F3	DB  	0CFH,3CH,0F3H
+ 1688:	  0ECB	0C 30 C3	DB	0CH,30H,0C3H
+ 1689:	  0ECE	0C 30 C3	DB	0CH,30H,0C3H
+ 1690:	  0ED1	0C 30 C3	DB	0CH,30H,0C3H
+ 1691:
+ 1692:	  0ED4	9E 79 E7	DB   9EH,79H,0E7H
+ 1693:	  0ED7	9E 79 E7	DB   9EH,79H,0E7H
+ 1694:	  0EDA	9E 79 E7	DB   9EH,79H,0E7H
+ 1695:	  0EDD	9E 79 E7	DB   9EH,79H,0E7H
+ 1696:	  0EE0	9E 79 E7	DB   9EH,79H,0E7H
+ 1697:	  0EE3	18 61 86	DB  	18H,61H,86H
+ 1698:	  0EE6	18 61 86	DB  	18H,61H,86H
+ 1699:	  0EE9	18 61 86	DB 	18H,61H,86H
+ 1700:
+ 1701:	  0EEC	3C F3 CF	DB 	3CH,0F3H,0CFH
+ 1702:	  0EEF	3C F3 CF	DB	3CH,0F3H,0CFH
+ 1703:	  0EF2	3C F3 CF	DB 	3CH,0F3H,0CFH
+ 1704:	  0EF5	3C F3 CF	DB 	3CH,0F3H,0CFH
+ 1705:	  0EF8	3C F3 CF	DB	3CH,0F3H,0CFH
+ 1706:	  0EFB	30 C3 0C	DB	30H,0C3H,0CH
+ 1707:	  0EFE	30 C3 0C	DB	30H,0C3H,0CH
+ 1708:	  0F01	30 C3 0C	DB	30H,0C3H,0CH
+ 1709:
+ 1710:	  0F04	79 E7 9E	DB	79H,0E7H,9EH
+ 1711:	  0F07	79 E7 9E	DB	79H,0E7H,9EH
+ 1712:	  0F0A	79 E7 9E	DB	79H,0E7H,9EH
+ 1713:	  0F0D	79 E7 9E	DB	79H,0E7H,9EH
+ 1714:	  0F10	79 E7 9E	DB 	79H,0E7H,9EH
+ 1715:	  0F13	61 86 18	DB	61H,86H,18H
+ 1716:	  0F16	61 86 18	DB	61H,86H,18H
+ 1717:	  0F19	61 86 18	DB	61H,86H,18H
+ 1718:
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 32
+
+
+
+ Line  I  Addr  Code            Source
+
+ 1719:	  0F1C	F3 CF 3C	DB 	0F3H,0CFH,3CH
+ 1720:	  0F1F	F3 CF 3C	DB 	0F3H,0CFH,3CH
+ 1721:	  0F22	F3 CF 3C	DB  	0F3H,0CFH,3CH
+ 1722:	  0F25	F3 CF 3C	DB	0F3H,0CFH,3CH
+ 1723:	  0F28	F3 CF 3C	DB 	0F3H,0CFH,3CH
+ 1724:	  0F2B	C3 0C 30	DB	0C3H,0CH,30H
+ 1725:	  0F2E	C3 0C 30	DB	0C3H,0CH,30H
+ 1726:	  0F31	C3 0C 30	DB	0C3H,0CH,30H
+ 1727:
+ 1728:	  0F34	99		DB	099H
+ 1729:				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 1730:				END
+
+
+
+
+
+                     register banks used:  ---
+
+                     no errors
+
+
+
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 33
+
+
+
+
+
+	       L I S T   O F   S Y M B O L S
+	       =============================
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+??ASEM_51			  NUMBER    8051
+??VERSION			  NUMBER    0130
+AC				  BIT	      D6
+ACC				  DATA	      E0
+AN0				  BIT	      93	  15
+AN1				  BIT	      94	  16
+B				  DATA	      F0
+BDN				  REGISTER    R4	  25
+BHT_CK1				  NUMBER    0047	  34
+BHT_NGAT1			  NUMBER    0051	  35
+BMODE				  REGISTER    R3	  26
+CDS				  BIT	      A0	   2
+CHUKY				  REGISTER    R5	  24
+CK				  NUMBER    0040	  27
+CK1				  NUMBER    0041	  28
+CODE7SEG			  CODE	    031C	 501
+COE				  BIT	      A3	   5
+CSHCP				  BIT	      A1	   3
+CSTCP				  BIT	      A2	   4
+CY				  BIT	      D7
+DATACOT				  CODE	    02A7	 432
+DATACOT1			  CODE	    02A9	 434
+DCCHUKY				  CODE	    01E6	 317
+DCCHUKY1			  CODE	    01F4	 324
+DCCK				  BIT	      92	  14
+DCM				  BIT	      90	  12
+DCMODE				  CODE	    01D9	 307
+DCMODE3				  CODE	    01DF	 311
+DCN				  BIT	      91	  13
+DCNGAT				  CODE	    020D	 340
+DCNGAT1				  CODE	    021B	 347
+DELAY				  CODE	    0308	 492
+DELAY1				  CODE	    030B	 493
+DL				  NUMBER    0042	  29
+DON1				  CODE	    010F	 190
+DON10				  CODE	    0157	 226
+DON11				  CODE	    015F	 230
+DON12				  CODE	    0167	 234
+DON13				  CODE	    016F	 237
+DON2				  CODE	    0117	 194
+DON3				  CODE	    011F	 198
+DON4				  CODE	    0127	 202
+DON5				  CODE	    012F	 206
+DON6				  CODE	    0137	 210
+DON7				  CODE	    013F	 214
+DON8				  CODE	    0147	 218
+DON9				  CODE	    014F	 222
+DPH				  DATA	      83
+DPL				  DATA	      82
+EA				  BIT	      AF
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 34
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+ES				  BIT	      AC
+ET0				  BIT	      A9
+ET1				  BIT	      AB
+EX0				  BIT	      A8
+EX1				  BIT	      AA
+EXTI0				  CODE	    0003
+EXTI1				  CODE	    0013
+F0				  BIT	      D5
+GIAIMA_HT			  CODE	    02CB	 460
+GIAIMA_HT1			  CODE	    02C0	 452
+GIAIMA_HT2			  CODE	    02C4	 455
+GIAIMA_HT3			  CODE	    02C9	 458
+HAOQUANG1			  CODE	    0058	  78
+HAOQUANG10			  CODE	    00D0	 151
+HAOQUANG11			  CODE	    00DD	 159
+HAOQUANG12			  CODE	    00EA	 167
+HAOQUANG13			  CODE	    00FA	 176
+HAOQUANG2			  CODE	    0065	  86
+HAOQUANG3			  CODE	    0072	  94
+HAOQUANG4			  CODE	    007F	 102
+HAOQUANG5			  CODE	    008C	 110
+HAOQUANG6			  CODE	    0099	 118
+HAOQUANG7			  CODE	    00A6	 126
+HAOQUANG8			  CODE	    00B3	 134
+HAOQUANG9			  CODE	    00C3	 143
+HDS				  BIT	      A4	   7
+HIEUUNGDON			  CODE	    0107	 184
+HOE				  BIT	      A7	  10
+HSHCP				  BIT	      A5	   8
+HSTCP				  BIT	      A6	   9
+HT				  NUMBER    0046	  33
+HU_2CANH_PT			  CODE	    0AF8	1303
+HU_3CANH_PT			  CODE	    0A37	1226
+HU_3TIA_CHAY			  CODE	    0D83	1560
+HU_3TIA_MOC			  CODE	    0CDA	1493
+HU_4CANH1TIA_PT			  CODE	    0448	 624
+HU_4CANH3TIA_PT			  CODE	    03B7	 565
+HU_4CANH5TIA_PT			  CODE	    0326	 506
+HU_CHUVAN_PT			  CODE	    0EA4	1672
+HU_HOANO_CHAY			  CODE	    0856	1041
+HU_HOANO_MOC			  CODE	    07AD	 973
+HU_HOASANG_PT			  CODE	    05FA	 796
+HU_HOATAT_PT			  CODE	    071C	 914
+HU_HOAVIEN_PT			  CODE	    068B	 855
+HU_KIMCUONG_PT			  CODE	    0C19	1416
+HU_PHOANG_PT			  CODE	    04D9	 683
+IE				  DATA	      A8
+IE0				  BIT	      89
+IE1				  BIT	      8B
+INT0				  BIT	      B2
+INT1				  BIT	      B3
+INTERRUP1			  CODE	    027D	 405
+INTERRUP2			  CODE	    0284	 409
+IP				  DATA	      B8
+IT0				  BIT	      88
+IT1				  BIT	      8A
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 35
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+KICH1				  BIT	      97	  19
+LAP				  NUMBER    0045	  32
+LAPLAI				  CODE	    02E5	 476
+M1				  CODE	    005B	  80
+M10				  CODE	    00D3	 153
+M11				  CODE	    00E0	 161
+M12A				  CODE	    00ED	 169
+M12B				  CODE	    00F0	 170
+M13				  CODE	    00FD	 178
+M2				  CODE	    0068	  88
+M3				  CODE	    0075	  96
+M4				  CODE	    0082	 104
+M5				  CODE	    008F	 112
+M6				  CODE	    009C	 120
+M7				  CODE	    00A9	 128
+M8A				  CODE	    00B6	 136
+M8B				  CODE	    00B9	 137
+M9				  CODE	    00C6	 145
+MAIN				  CODE	    0013	  49
+MAIN0				  CODE	    002F	  62
+MT_2CANH_PT			  CODE	    01B6	 283
+MT_3CANH_PT			  CODE	    01AF	 279
+MT_3TIA_CHAY			  CODE	    01CB	 296
+MT_3TIA_MOC			  CODE	    01C4	 292
+MT_4CANH1TIA_PT			  CODE	    017E	 248
+MT_4CANH3TIA_PT			  CODE	    0177	 244
+MT_4CANH5TIA_PT			  CODE	    0170	 240
+MT_CHUVAN_PT			  CODE	    01D2	 301
+MT_HOANO_CHAY			  CODE	    01A8	 274
+MT_HOANO_MOC			  CODE	    01A1	 270
+MT_HOASANG_PT			  CODE	    018C	 258
+MT_HOATAT_PT			  CODE	    019A	 266
+MT_HOAVIEN_PT			  CODE	    0193	 262
+MT_KIMCUONG_PT			  CODE	    01BD	 288
+MT_PHOANG_PT			  CODE	    0185	 253
+NGAT				  NUMBER    0043	  30
+NGAT1				  NUMBER    0044	  31
+OV				  BIT	      D2
+P				  BIT	      D0
+P0				  DATA	      80
+P1				  DATA	      90
+P2				  DATA	      A0
+P3				  DATA	      B0
+PCON				  DATA	      87
+PS				  BIT	      BC
+PSW				  DATA	      D0
+PT0				  BIT	      B9
+PT1				  BIT	      BB
+PX0				  BIT	      B8
+PX1				  BIT	      BA
+QUETLED				  CODE	    0234	 363
+QUETLED1			  CODE	    023D	 368
+QUETLED2			  CODE	    024F	 378
+QUETLED3			  CODE	    0252	 380
+QUETLED4			  CODE	    0258	 386
+QUETLED5			  CODE	    028B	 413
+
+ASEM-51 V1.3                                        Copyright (c) 2002 by W.W. Heinz                                         PAGE 36
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+RB8				  BIT	      9A
+RD				  BIT	      B7
+RELXUNG				  CODE	    02A3	 428
+REN				  BIT	      9C
+RESET				  CODE	    0000
+RI				  BIT	      98
+RS0				  BIT	      D3
+RS1				  BIT	      D4
+RXD				  BIT	      B0
+SBUF				  DATA	      99
+SCON				  DATA	      98
+SEG				  NUMBER    00B0	  20
+SINT				  CODE	    0023
+SLBIT				  REGISTER    R6	  23
+SLBYTE				  REGISTER    R7	  22
+SM0				  BIT	      9F
+SM1				  BIT	      9E
+SM2				  BIT	      9D
+SP				  DATA	      81
+T0				  BIT	      B4
+T1				  BIT	      B5
+TANGDPTR			  CODE	    029D	 423
+TB8				  BIT	      9B
+TCON				  DATA	      88
+TF0				  BIT	      8D
+TF1				  BIT	      8F
+TH0				  DATA	      8C
+TH1				  DATA	      8D
+TI				  BIT	      99
+TIMER0				  CODE	    000B
+TIMER1				  CODE	    001B
+TL0				  DATA	      8A
+TL1				  DATA	      8B
+TMOD				  DATA	      89
+TR0				  BIT	      8C
+TR1				  BIT	      8E
+TXD				  BIT	      B1
+VAN0				  BIT	      95	  17
+VAN1				  BIT	      96	  18
+WR				  BIT	      B6
+XOA1				  CODE	    02F0	 480
+XOA2				  CODE	    02F3	 481
+XUNGHANG			  CODE	    02B7	 444

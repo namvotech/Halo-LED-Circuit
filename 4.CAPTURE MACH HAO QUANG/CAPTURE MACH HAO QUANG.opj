@@ -1,0 +1,117 @@
+(ExpressProject "CAPTURE MACH HAO QUANG"
+  (ProjectVersion "19981106")
+  (ProjectType "PCB")
+  (Folder "Design Resources"
+    (Folder "Library")
+    (NoModify)
+    (File ".\capture mach hao quang.dsn"
+      (Type "Schematic Design"))
+    (BuildFileAddedOrDeleted "x")
+    (CompileFileAddedOrDeleted "x")
+    (Netlist_TAB "5")
+    (LAYOUT_Netlist_File "CAPTURE MACH HAO QUANG.MNL")
+    (LAYOUT_PCB_Footprint "{PCB Footprint}")
+    (TRUE)
+    (LAYOUT_Units "0")
+    (TRUE)
+    (TRUE)
+    (TRUE))
+  (Folder "Outputs"
+    (File ".\capture mach hao quang.mnl"
+      (Type "LAYOUT Netlist File")))
+  (Folder "Referenced Projects")
+  (PartMRUSelector
+    (BRIDGE
+      (FullPartName "BRIDGE.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\DISCRETE.OLB")
+      (DeviceIndex "0"))
+    (GND
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\CAPSYM.OLB")
+      (DeviceIndex "0"))
+    (VCC
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\CAPSYM.OLB")
+      (DeviceIndex "0"))
+    (RESISTOR
+      (FullPartName "RESISTOR.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\DISCRETE.OLB")
+      (DeviceIndex "0"))
+    ("NPN BEC"
+      (FullPartName "NPN BEC.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\OLDLIBS\LAYOUT.OLB")
+      (DeviceIndex "0"))
+    (CAP
+      (FullPartName "CAP.Normal")
+      (LibraryName "C:\ORCAD\ORCAD_10.5\TOOLS\CAPTURE\LIBRARY\DISCRETE.OLB")
+      (DeviceIndex "0"))
+    (SW_PB_SPST
+      (FullPartName "SW_PB_SPST.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\DISCRETE.OLB")
+      (DeviceIndex "0"))
+    (L7809/TO220
+      (FullPartName "L7809/TO220.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\REGULATOR.OLB")
+      (DeviceIndex "0"))
+    ("HEADER 7"
+      (FullPartName "HEADER 7.Normal")
+      (LibraryName
+         "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\OLDLIBS\CONNECTR.OLB")
+      (DeviceIndex "0"))
+    ("HEADER 3"
+      (FullPartName "HEADER 3.Normal")
+      (LibraryName
+         "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\OLDLIBS\CONNECTR.OLB")
+      (DeviceIndex "0"))
+    (7SEG_pDboPackage_Copy_0000
+      (FullPartName "7SEG_pDboPackage_Copy_0000.Normal")
+      (LibraryName
+         "D:\1.TAI LIEU CHUYEN NGANH\2. DIEN TU\3.PHAN MEM DIEN TU\ADD THU VIEN FULL\ADD THU VIEN FULL\LIBRARY6.OLB")
+      (DeviceIndex "0"))
+    ("7SEG X 4"
+      (FullPartName "7SEG X 4.Normal")
+      (LibraryName
+         "D:\1.TAI LIEU CHUYEN NGANH\2. DIEN TU\3.PHAN MEM DIEN TU\ADD THU VIEN FULL\ADD THU VIEN FULL\LIBRARY4.OLB")
+      (DeviceIndex "0"))
+    ("HEADER 6"
+      (FullPartName "HEADER 6.Normal")
+      (LibraryName
+         "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\OLDLIBS\CONNECTR.OLB")
+      (DeviceIndex "0"))
+    ("HEADER 8"
+      (FullPartName "HEADER 8.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\OLDLIBS\DEVICE.OLB")
+      (DeviceIndex "0"))
+    (4017
+      (FullPartName "4017.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\COUNTER.OLB")
+      (DeviceIndex "0"))
+    (74HC595
+      (FullPartName "74HC595.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\74HC.OLB")
+      (DeviceIndex "0"))
+    (74HC595/LCC
+      (FullPartName "74HC595/LCC.Normal")
+      (LibraryName "C:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\SHIFTREGISTER.OLB")
+      (DeviceIndex "0")))
+  (GlobalState
+    (FileView
+      (Path "Design Resources")
+      (Path "Outputs"))
+    (HierarchyView)
+    (Doc
+      (Type "COrCapturePMDoc")
+      (Frame
+        (Placement "44 0 1 -1 -1 -8 -30 25 816 25 464"))
+      (Tab 0))
+    (Doc
+      (Type "COrSchematicDoc")
+      (Frame
+        (Placement "44 2 3 -1 -1 -4 -40 44 954 78 502")
+        (Scroll "0 0")
+        (Zoom "50")
+        (Occurrence "/"))
+      (Path
+         "D:\1.TAI LIEU CHUYEN NGANH\1.MON HOC\7.HOC KY I_2012-2013\DO AN MON HOC 2_THAY DO DUC TRI\BAI BAO CAO DO AN MON HOC 2_MINH NAM\MACH\CAPTURE MACH HAO QUANG\CAPTURE MACH HAO QUANG.DSN")
+      (Schematic "SCHEMATIC1")
+      (Page "PAGE1")))
+  (LastUsedLibraryBrowseDirectory
+     "D:\1.TAI LIEU CHUYEN NGANH\2. DIEN TU\3.PHAN MEM DIEN TU\add thu vien full\add thu vien full"))
